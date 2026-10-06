@@ -3,919 +3,545 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DNA Quest: Interactive Point & Line Graphing Lab</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <title>DNA Direct Proportion Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    :root {
-      --primary: #0284c7;
-      --primary-dark: #0369a1;
-      --accent-green: #10b981;
-      --accent-purple: #8b5cf6;
-      --accent-orange: #f59e0b;
-      --bg: #f0fdf4;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #cbd5e1;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
-      color: var(--text);
-      padding: 20px;
-      min-height: 100vh;
-      user-select: none;
-    }
-
-    .container {
-      max-width: 920px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      padding: 22px;
-      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-      border-radius: 16px;
-      margin-bottom: 25px;
-      color: white;
-      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.2);
-    }
-
-    header h1 {
-      font-size: 2.1rem;
-      margin-bottom: 6px;
-    }
-
-    header p {
-      color: #e0f2fe;
-      font-size: 1rem;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.3);
-      height: 12px;
-      border-radius: 6px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 20%;
-      background: linear-gradient(90deg, #34d399, #facc15);
-      border-radius: 6px;
-      transition: width 0.4s ease;
-    }
-
-    .level-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 25px;
-      position: relative;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-      border-top: 6px solid var(--primary);
-    }
-
-    #level0 { border-top-color: #38bdf8; }
-    #level1 { border-top-color: var(--accent-green); }
-    #level2 { border-top-color: var(--primary); }
-    #level3 { border-top-color: var(--accent-purple); }
-    #level4 { border-top-color: var(--accent-orange); }
-
-    .level-card.locked {
-      opacity: 0.45;
-      pointer-events: none;
-      filter: grayscale(70%);
-    }
-
-    .level-card.locked::after {
-      content: "🔒 Locked — Complete Step " attr(data-step) " First";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #0f172a;
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-weight: bold;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    }
-
-    .badge {
-      display: inline-block;
-      color: white;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    #level0 .badge { background: #0284c7; }
-    #level1 .badge { background: var(--accent-green); }
-    #level2 .badge { background: var(--primary); }
-    #level3 .badge { background: var(--accent-purple); }
-    #level4 .badge { background: var(--accent-orange); }
-
-    .dna-container {
-      width: 100%;
-      height: 140px;
-      background: #0f172a;
-      border-radius: 12px;
-      margin: 15px 0;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
-      cursor: grab;
-    }
-
-    .dna-container:active {
-      cursor: grabbing;
-    }
-
-    .drag-handle-hint {
-      position: absolute;
-      right: 15px;
-      top: 12px;
-      background: rgba(255,255,255,0.15);
-      color: #38bdf8;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      pointer-events: none;
-    }
-
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .slider-group {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    input[type=range] {
-      flex: 1;
-      height: 8px;
-      border-radius: 4px;
-      background: #cbd5e1;
-      outline: none;
-      accent-color: var(--primary);
-    }
-
-    .output-box {
-      background: #f8fafc;
-      padding: 14px;
-      border-radius: 10px;
-      border: 2px solid #e2e8f0;
-      font-size: 1rem;
-      color: #334155;
-    }
-
-    .highlight {
-      color: #0284c7;
-      font-weight: bold;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      background: #ffffff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    th, td {
-      border: 1px solid #e2e8f0;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f1f5f9;
-      color: #334155;
-      font-weight: 700;
-    }
-
-    input[type=number] {
-      width: 110px;
-      padding: 8px;
-      text-align: center;
-      background: #f8fafc;
-      border: 2px solid #cbd5e1;
-      color: #0f172a;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    input[type=number]:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: #ffffff;
-    }
-
-    .btn {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      display: inline-block;
-      margin-top: 12px;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.35);
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      margin-left: 8px;
-    }
-
-    .btn-action {
-      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-      margin-left: 8px;
-    }
-
-    .feedback {
-      margin-top: 15px;
-      padding: 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      display: none;
-      transition: all 0.3s ease;
-    }
-
-    .feedback.guided-hint {
-      display: block;
-      background: #fef3c7;
-      color: #92400e;
-      border: 2px solid #fde68a;
-    }
-
-    .feedback.correct {
-      display: block;
-      background: #dcfce7;
-      color: #15803d;
-      border: 2px solid #86efac;
-    }
-
-    /* Interactive Graph Canvas Styles */
-    .graph-wrapper {
-      position: relative;
-      width: 100%;
-      background: #f8fafc;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      margin-top: 15px;
-    }
-
-    #plotCanvas {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      cursor: crosshair;
-      display: block;
-      width: 100%;
-      height: 340px;
-    }
-
-    .target-checklist {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-      padding: 10px;
-      background: #f1f5f9;
-      border-radius: 8px;
-      font-size: 0.9rem;
-    }
-
-    .target-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-    }
-
-    .target-item.done {
-      color: #16a34a;
-    }
-
-    .instructions-box {
-      background: #f0fdf4;
-      border-left: 4px solid #10b981;
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-      color: #065f46;
-    }
-
-    .certificate {
-      display: none;
-      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-      border: 3px solid #f59e0b;
-      border-radius: 16px;
-      padding: 25px;
-      text-align: center;
-      margin-top: 20px;
-      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
-    }
-
-    .certificate h2 {
-      color: #b45309;
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-    }
-
-    .info-box {
-      background: #e0f2fe;
-      border-left: 5px solid #0284c7;
-      padding: 12px 16px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 0.95rem;
-      color: #0369a1;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fdfbf7; }
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+    .fraction-box { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; }
+    .fraction-box input { width: 52px; height: 36px; text-align: center; font-weight: 700; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 1rem; background-color: #ffffff; outline: none; transition: all 0.2s; }
+    .fraction-box input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
+    .fraction-line { width: 100%; height: 2px; background-color: #334155; margin: 3px 0; border-radius: 2px; }
   </style>
 </head>
-<body>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen flex flex-col justify-between">
 
-<div class="container">
-  <header>
-    <h1>🧬 DNA Quest: Interactive Graphing & Direct Proportion Lab</h1>
-    <p>Explore physical DNA models, plot coordinate points, and draw your proportion graph line!</p>
-    <div class="progress-bar-container">
-      <div id="progressFill" class="progress-fill"></div>
-    </div>
-  </header>
+  <div class="max-w-3xl mx-auto w-full">
 
-  <!-- STEP 1 (Level 0): Tactile DNA Assembly -->
-  <div id="level0" class="level-card" data-step="0">
-    <span class="badge">Step 1: Tactile Manipulative</span>
-    <h2>1. The Physical DNA Ladder</h2>
-    
-    <div class="info-box">
-      <strong>🧬 Concrete Model:</strong> DNA forms a twisted ladder shape called a <strong>Double Helix</strong>[cite: 1, 2, 3]. 
-      Every rung is a paired base pair (bp)[cite: 1, 2, 3]. Drag or stretch the helix below to observe how each added rung extends total physical length[cite: 1, 2, 3].
-    </div>
-
-    <div class="dna-container" id="tactileDnaContainer">
-      <span class="drag-handle-hint">👈 Drag Strand Right to Stretch 👉</span>
-      <svg id="dnaSvg0" width="100%" height="100%" viewBox="0 0 600 120"></svg>
-    </div>
-
-    <div class="controls">
-      <div class="slider-group">
-        <label for="bpSlider0"><strong>Rung Count (Base Pairs, x):</strong></label>
-        <input type="range" id="bpSlider0" min="300" max="1800" step="300" value="300">
-        <span id="bpValue0" class="highlight">300 bp</span>
+    <!-- Header Navigation -->
+    <header class="bg-white p-5 rounded-2xl border border-amber-100 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Math Discovery Lab</span>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-900 mt-1">DNA Ladder Length Activity</h1>
       </div>
-      <div class="output-box">
-        Measured Physical Strand Length (y) = <span id="lengthValue0" class="highlight">100</span> nm
+
+      <div class="flex items-center gap-2">
+        <div id="step-dot-1" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-teal-600 text-white">1</div>
+        <div class="w-4 h-0.5 bg-slate-200"></div>
+        <div id="step-dot-2" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-200 text-slate-500">2</div>
+        <div class="w-4 h-0.5 bg-slate-200"></div>
+        <div id="step-dot-3" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-200 text-slate-500">3</div>
+        <div class="w-4 h-0.5 bg-slate-200"></div>
+        <div id="step-dot-4" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-200 text-slate-500">4</div>
+        <div class="w-4 h-0.5 bg-slate-200"></div>
+        <div id="step-dot-5" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-200 text-slate-500">5</div>
+      </div>
+    </header>
+
+    <!-- PAGE 1: OBSERVE & FIND RULE -->
+    <div id="page-1" class="page-view active bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Step 1: Discover the Rung Length</h2>
+        <p class="text-slate-600 text-sm mt-1">Observe the DNA sample below to determine the constant of proportionality.</p>
+      </div>
+
+      <div class="bg-amber-50/50 p-6 rounded-xl border border-amber-100 flex flex-col md:flex-row items-center justify-around gap-6">
+        <svg width="220" height="180" viewBox="0 0 220 180" class="drop-shadow-sm">
+          <path d="M 60 10 Q 110 90 60 170" fill="none" stroke="#0d9488" stroke-width="4" />
+          <path d="M 140 10 Q 90 90 140 170" fill="none" stroke="#0d9488" stroke-width="4" />
+          <line x1="68" y1="25" x2="132" y2="25" stroke="#d97706" stroke-width="4" />
+          <line x1="82" y1="58" x2="118" y2="58" stroke="#d97706" stroke-width="4" />
+          <line x1="88" y1="90" x2="112" y2="90" stroke="#d97706" stroke-width="4" />
+          <line x1="82" y1="122" x2="118" y2="122" stroke="#d97706" stroke-width="4" />
+          <line x1="68" y1="155" x2="132" y2="155" stroke="#d97706" stroke-width="4" />
+          <line x1="160" y1="25" x2="160" y2="155" stroke="#475569" stroke-width="2" />
+          <line x1="155" y1="25" x2="165" y2="25" stroke="#475569" stroke-width="2" />
+          <line x1="155" y1="155" x2="165" y2="155" stroke="#475569" stroke-width="2" />
+          <text x="172" y="95" fill="#1e293b" font-size="13" font-weight="bold">17 nm</text>
+        </svg>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 text-sm text-slate-700">
+          <p class="font-bold text-slate-900">Lab Data:</p>
+          <p>• Rung Count (<span class="font-bold">x</span>) = <span class="font-bold text-amber-700">5 rungs</span></p>
+          <p>• Total Length (<span class="font-bold">y</span>) = <span class="font-bold text-teal-700">17 nm</span></p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <p class="font-medium text-slate-800 text-sm">1. How long is <strong>1 single rung</strong>? (Enter as an improper fraction)</p>
+        <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <span class="text-sm font-bold text-slate-700">Length per rung =</span>
+          <div class="fraction-box">
+            <input type="text" id="p1-num" inputmode="numeric" placeholder="Top">
+            <div class="fraction-line"></div>
+            <input type="text" id="p1-den" inputmode="numeric" placeholder="Bottom">
+          </div>
+          <span class="text-sm text-slate-500">nanometers</span>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <p class="font-medium text-slate-800 text-sm">2. Write the algebraic rule for total length (<span class="font-bold">y</span>) given rungs (<span class="font-bold">x</span>):</p>
+        <div class="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-200 text-base font-bold text-slate-800">
+          <span>y = (</span>
+          <div class="fraction-box">
+            <input type="text" id="p1-rule-num" inputmode="numeric" placeholder="Top">
+            <div class="fraction-line"></div>
+            <input type="text" id="p1-rule-den" inputmode="numeric" placeholder="Bottom">
+          </div>
+          <span>) · x</span>
+        </div>
+      </div>
+
+      <div id="p1-feedback" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+
+      <button onclick="checkPage1()" class="w-full sm:w-auto px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition shadow-sm">
+        Check Answer & Continue →
+      </button>
+    </div>
+
+    <!-- PAGE 2: DATA TABLE -->
+    <div id="page-2" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Step 2: Complete the Measurement Chart</h2>
+        <p class="text-slate-600 text-sm mt-1">Use your rule <span class="font-bold text-slate-800">y = (17/5) · x</span> to calculate the values for your graph.</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden">
+          <thead>
+            <tr class="bg-amber-50/60 text-slate-700 text-sm">
+              <th class="p-3.5 border-b border-slate-200">Rungs (x)</th>
+              <th class="p-3.5 border-b border-slate-200">Length in nm (y)</th>
+              <th class="p-3.5 border-b border-slate-200">Coordinate Pair (x, y)</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr class="border-b border-slate-100">
+              <td class="p-3.5 font-bold text-slate-800">5</td>
+              <td class="p-3.5 text-slate-600">17</td>
+              <td class="p-3.5 font-mono text-slate-500">(5, 17)</td>
+            </tr>
+            <tr class="border-b border-slate-100">
+              <td class="p-3.5 font-bold text-slate-800">10</td>
+              <td class="p-3.5">
+                <input type="text" id="p2-y1" inputmode="numeric" placeholder="Length" class="px-3 py-1.5 border border-slate-300 rounded-lg w-28 text-center font-bold focus:ring-2 focus:ring-teal-500 outline-none">
+              </td>
+              <td class="p-3.5 font-mono text-slate-500" id="p2-c1">(10, ?)</td>
+            </tr>
+            <tr class="border-b border-slate-100">
+              <td class="p-3.5 font-bold text-slate-800">15</td>
+              <td class="p-3.5">
+                <input type="text" id="p2-y2" inputmode="numeric" placeholder="Length" class="px-3 py-1.5 border border-slate-300 rounded-lg w-28 text-center font-bold focus:ring-2 focus:ring-teal-500 outline-none">
+              </td>
+              <td class="p-3.5 font-mono text-slate-500" id="p2-c2">(15, ?)</td>
+            </tr>
+            <tr>
+              <td class="p-3.5 font-bold text-slate-800">20</td>
+              <td class="p-3.5">
+                <input type="text" id="p2-y3" inputmode="numeric" placeholder="Length" class="px-3 py-1.5 border border-slate-300 rounded-lg w-28 text-center font-bold focus:ring-2 focus:ring-teal-500 outline-none">
+              </td>
+              <td class="p-3.5 font-mono text-slate-500" id="p2-c3">(20, ?)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="p2-feedback" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+
+      <div class="flex justify-between items-center pt-4">
+        <button onclick="goToPage(1)" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 text-sm font-medium">← Back</button>
+        <button onclick="checkPage2()" class="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition shadow-sm">Check Chart & Continue →</button>
       </div>
     </div>
 
-    <button class="btn" onclick="unlockLevel(1)">Lock In Rungs & Move to Calibration 🔓</button>
+    <!-- PAGE 3: PLOT POINTS (TEACHER-FRIENDLY GRAPH) -->
+    <div id="page-3" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Step 3: Plot Your Points</h2>
+        <p class="text-slate-600 text-sm mt-1">Use the axes below to plot your 4 coordinate pairs: <strong>(5, 17)</strong>, <strong>(10, 34)</strong>, <strong>(15, 51)</strong>, and <strong>(20, 68)</strong>. Click the grid where each point belongs!</p>
+      </div>
+
+      <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <canvas id="plotCanvas" width="480" height="360" class="bg-white rounded-lg border border-slate-300 shadow-inner cursor-crosshair"></canvas>
+        <div class="flex items-center justify-between w-full max-w-md mt-3 text-xs text-slate-500">
+          <span>Points Plotted: <strong id="point-count" class="text-slate-800">0 / 4</strong></span>
+          <button onclick="clearPlottedPoints()" class="text-amber-700 hover:underline font-semibold">Reset Points</button>
+        </div>
+      </div>
+
+      <div id="p3-feedback" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+
+      <div class="flex justify-between items-center pt-4">
+        <button onclick="goToPage(2)" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 text-sm font-medium">← Back</button>
+        <button onclick="checkPage3()" class="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition shadow-sm">Verify Graph & Continue →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: CONNECT LINE -->
+    <div id="page-4" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Step 4: Analyze the Line of Proportionality</h2>
+        <p class="text-slate-600 text-sm mt-1">Direct proportions form a continuous straight line that passes through the origin $(0,0)$.</p>
+      </div>
+
+      <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <canvas id="lineCanvas" width="480" height="360" class="bg-white rounded-lg border border-slate-300 shadow-inner"></canvas>
+      </div>
+
+      <div class="flex justify-center">
+        <button onclick="drawLine()" class="px-6 py-2.5 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition shadow-sm">
+          ✏️ Draw Line Through Points
+        </button>
+      </div>
+
+      <div id="p4-feedback" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+
+      <div class="flex justify-between items-center pt-4">
+        <button onclick="goToPage(3)" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 text-sm font-medium">← Back</button>
+        <button onclick="checkPage4()" class="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition shadow-sm">Continue to Crime Lab →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: CRIME LAB -->
+    <div id="page-5" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Step 5: Crime Scene Mystery Challenge</h2>
+        <p class="text-slate-600 text-sm mt-1">Apply your proportional equation to solve the evidence case.</p>
+      </div>
+
+      <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 space-y-2 text-sm text-slate-800">
+        <p class="font-bold text-amber-900">🔍 Forensic Case File:</p>
+        <p>A recovered DNA strand has a measured length of <strong>85 nanometers</strong>.</p>
+        <p>Use your equation <span class="font-bold">y = (17/5) · x</span> to solve for the total number of rungs (<span class="font-bold">x</span>).</p>
+      </div>
+
+      <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <label class="text-sm font-bold text-slate-700">Calculated Rungs =</label>
+        <input type="text" id="p5-input" inputmode="numeric" placeholder="Rungs" class="px-4 py-2 border border-slate-300 rounded-lg w-32 text-center font-bold text-lg focus:ring-2 focus:ring-teal-500 outline-none">
+        <span class="text-sm text-slate-500">rungs</span>
+      </div>
+
+      <div id="p5-feedback" class="hidden p-3 rounded-lg text-sm font-medium"></div>
+
+      <div class="flex justify-between items-center pt-4">
+        <button onclick="goToPage(4)" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 text-sm font-medium">← Back</button>
+        <button onclick="checkPage5()" class="px-6 py-3 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition shadow-sm">Submit Analysis 🎓</button>
+      </div>
+
+      <div id="certificate" class="hidden mt-8 p-6 bg-gradient-to-br from-teal-50 to-amber-50 rounded-2xl border-2 border-teal-600 text-center space-y-3">
+        <span class="text-4xl">🧬</span>
+        <h3 class="text-xl font-bold text-slate-900">Direct Proportion Mastery Certificate</h3>
+        <p class="text-slate-600 text-sm">Congratulations! You successfully calculated the constant of proportionality, completed the data table, accurately graphed the coordinates, and solved the forensic case!</p>
+        <div class="pt-3 border-t border-slate-200 text-xs text-slate-500 font-medium">Grade 8 Mathematics • Core Equation: y = (17/5) · x</div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- STEP 2 (Level 1): Calibration & Unit Rate k -->
-  <div id="level1" class="level-card locked" data-step="1">
-    <span class="badge">Step 2: Concrete-to-Abstract Bridge</span>
-    <h2>2. Measuring Constant Rate (k)</h2>
-    <p style="color: var(--text-muted); margin-top: 4px;">
-      In Direct Proportion, <strong>y = k · x</strong>. Adjust base pairs to find the constant rate factor connecting physical space to genetic count.
-    </p>
-    
-    <div class="dna-container">
-      <svg id="dnaSvg1" width="100%" height="100%" viewBox="0 0 600 120"></svg>
-    </div>
+  <script>
+    let currentPage = 1;
+    let plottedPoints = [];
+    let isLineDrawn = false;
 
-    <div class="controls">
-      <div class="slider-group">
-        <label for="bpSlider1"><strong>Base Pairs (x):</strong></label>
-        <input type="range" id="bpSlider1" min="300" max="3000" step="300" value="300">
-        <span id="bpValue1" class="highlight">300 bp</span>
-      </div>
-      <div class="output-box">
-        Physical Length (y) = <span id="lengthValue1" class="highlight">100</span> nm
-        <br>
-        Constant Rate (k = y / x) = <span class="highlight">1/3 nm per base pair</span>
-      </div>
-    </div>
+    const TARGET_POINTS = [
+      { x: 5, y: 17 },
+      { x: 10, y: 34 },
+      { x: 15, y: 51 },
+      { x: 20, y: 68 }
+    ];
 
-    <button class="btn" onclick="unlockLevel(2)">Confirm Rate & Open Data Table 🔓</button>
-  </div>
-
-  <!-- STEP 3 (Level 2): Proportionality Table Practice -->
-  <div id="level2" class="level-card locked" data-step="2">
-    <span class="badge">Step 3: Proportionality Table</span>
-    <h2>3. Complete the Sample Measurement Table</h2>
-    <p style="color: var(--text-muted); margin-top: 4px;">
-      Apply the constant model <strong>y = 1/3 · x</strong> to determine missing parameters:
-    </p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>DNA Sample</th>
-          <th>Base Pairs (x)</th>
-          <th>Proportional Model</th>
-          <th>Strand Length in nm (y)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Sample A</td>
-          <td>600</td>
-          <td>1/3 · 600</td>
-          <td>200</td>
-        </tr>
-        <tr>
-          <td>Sample B</td>
-          <td>1,500</td>
-          <td>1/3 · 1500</td>
-          <td><input type="number" id="ansB" placeholder="? nm"></td>
-        </tr>
-        <tr>
-          <td>Sample C</td>
-          <td><input type="number" id="ansC_bp" placeholder="? bp"></td>
-          <td>1/3 · x = 800</td>
-          <td>800</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <button class="btn" onclick="checkLevel2()">Validate Table 🎯</button>
-    <div id="feedback2" class="feedback"></div>
-  </div>
-
-  <!-- STEP 4 (Level 3): INTERACTIVE POINT PLOTTING AND LINE DRAWING -->
-  <div id="level3" class="level-card locked" data-step="3">
-    <span class="badge">Step 4: Plot Points & Draw Line</span>
-    <h2>4. Plot Points and Connect the Graph Line</h2>
-    
-    <div class="instructions-box" id="step4Instructions">
-      <strong>Step A:</strong> Click on the canvas grid below to plot points <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.
-    </div>
-
-    <div class="graph-wrapper">
-      <canvas id="plotCanvas" width="800" height="340"></canvas>
-      <div class="target-checklist">
-        <div id="chk1" class="target-item">⚪ Plot Point (600, 200)</div>
-        <div id="chk2" class="target-item">⚪ Plot Point (1,500, 500)</div>
-        <div id="chk3" class="target-item">⚪ Plot Point (2,400, 800)</div>
-        <div id="chkLine" class="target-item">⚪ Connect Line from (0,0)</div>
-      </div>
-    </div>
-
-    <div>
-      <button class="btn btn-action" id="btnDrawMode" onclick="enableLineDrawing()" disabled>Connect Points with Line ✏️</button>
-      <button class="btn" id="btnVerifyGraph" onclick="checkGraph()">Verify Completed Graph 📈</button>
-      <button class="btn btn-secondary" onclick="resetGraph()">Reset Grid 🔄</button>
-    </div>
-    <div id="feedback3" class="feedback"></div>
-  </div>
-
-  <!-- STEP 5 (Level 4): Forensic Evidence Prediction -->
-  <div id="level4" class="level-card locked" data-step="4">
-    <span class="badge">Step 5: Applied Challenge</span>
-    <h2>5. Forensic Gene Sequence Challenge</h2>
-    <p style="color: var(--text-muted); margin-top: 4px;">
-      An evidence sample measures <strong>1,400 nanometers</strong> in length. 
-      Using your rate of <strong>1/3 nm per base pair</strong>, calculate the total base pair count (x).
-    </p>
-
-    <div style="margin: 20px 0;">
-      <label for="ansFinal"><strong>Base Pair Count (x):</strong> </label>
-      <input type="number" id="ansFinal" placeholder="Enter bp">
-      <button class="btn" onclick="checkLevel4()">Submit Analysis 🏆</button>
-    </div>
-    
-    <div id="feedback4" class="feedback"></div>
-
-    <div id="certificate" class="certificate">
-      <h2>🏆 Proportionality Specialist!</h2>
-      <p style="color: #78350f;">You successfully mastered direct proportion models across visual, numeric, point plotting, and line graphing representations!</p>
-      <p style="margin-top:12px; color:#047857; font-weight:bold;">Established Rate (k) = 1/3 nm/bp | Target Sequence = 4,200 base pairs</p>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Global State Variables
-  let currentStep = 0;
-  let attemptsL2 = 0;
-  let attemptsL4 = 0;
-
-  // Render SVG DNA Helix Helper
-  function renderHelix(svgId, bp) {
-    const svg = document.getElementById(svgId);
-    if (!svg) return;
-    svg.innerHTML = '';
-
-    const lengthNm = Math.round(bp / 3);
-    const rungs = Math.floor(bp / 60);
-    const spacing = 560 / Math.max(rungs, 4);
-
-    let strand1 = "M 10 35 ";
-    let strand2 = "M 10 85 ";
-
-    for (let i = 0; i <= rungs; i++) {
-      const x = 15 + i * spacing;
-      const y1 = 60 + 25 * Math.sin(i * 0.65);
-      const y2 = 60 - 25 * Math.sin(i * 0.65);
-
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      line.setAttribute("x1", x); line.setAttribute("y1", y1);
-      line.setAttribute("x2", x); line.setAttribute("y2", y2);
-      line.setAttribute("stroke", i % 2 === 0 ? "#f43f5e" : "#10b981");
-      line.setAttribute("stroke-width", "3");
-      svg.appendChild(line);
-
-      strand1 += `L ${x} ${y1} `;
-      strand2 += `L ${x} ${y2} `;
-    }
-
-    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path1.setAttribute("d", strand1);
-    path1.setAttribute("stroke", "#38bdf8");
-    path1.setAttribute("fill", "none");
-    path1.setAttribute("stroke-width", "4");
-    svg.appendChild(path1);
-
-    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path2.setAttribute("d", strand2);
-    path2.setAttribute("stroke", "#38bdf8");
-    path2.setAttribute("fill", "none");
-    path2.setAttribute("stroke-width", "4");
-    svg.appendChild(path2);
-  }
-
-  // Step 1 Manipulative Event Handling
-  const s0 = document.getElementById('bpSlider0');
-  s0.addEventListener('input', (e) => {
-    const bp = e.target.value;
-    document.getElementById('bpValue0').textContent = bp + ' bp';
-    document.getElementById('lengthValue0').textContent = Math.round(bp / 3);
-    renderHelix('dnaSvg0', bp);
-  });
-
-  const tactileContainer = document.getElementById('tactileDnaContainer');
-  let isDragging = false;
-
-  tactileContainer.addEventListener('mousedown', () => isDragging = true);
-  window.addEventListener('mouseup', () => isDragging = false);
-  tactileContainer.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const rect = tactileContainer.getBoundingClientRect();
-    const offsetX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-    const pct = offsetX / rect.width;
-    const newBp = Math.round((pct * 1500 + 300) / 300) * 300;
-    s0.value = Math.min(1800, Math.max(300, newBp));
-    s0.dispatchEvent(new Event('input'));
-  });
-
-  // Step 2 Slider Listeners
-  const s1 = document.getElementById('bpSlider1');
-  s1.addEventListener('input', (e) => {
-    const bp = e.target.value;
-    document.getElementById('bpValue1').textContent = bp + ' bp';
-    document.getElementById('lengthValue1').textContent = Math.round(bp / 3);
-    renderHelix('dnaSvg1', bp);
-  });
-
-  renderHelix('dnaSvg0', 300);
-  renderHelix('dnaSvg1', 300);
-
-  // Progressive Level Unlocking
-  function unlockLevel(lvlNum) {
-    currentStep = lvlNum;
-    const card = document.getElementById('level' + lvlNum);
-    card.classList.remove('locked');
-    card.scrollIntoView({ behavior: 'smooth' });
-
-    document.getElementById('progressFill').style.width = ((lvlNum + 1) * 20) + '%';
-
-    if (lvlNum === 3) drawGraphCanvas();
-  }
-
-  function checkLevel2() {
-    attemptsL2++;
-    const b = parseFloat(document.getElementById('ansB').value);
-    const c_bp = parseFloat(document.getElementById('ansC_bp').value);
-    const fb = document.getElementById('feedback2');
-
-    if (b === 500 && c_bp === 2400) {
-      fb.className = "feedback correct";
-      fb.textContent = "✨ Great calculation! 1/3 · 1500 = 500 nm and 2,400 base pairs produces 800 nm. Moving to Graph Plotting!";
-      setTimeout(() => unlockLevel(3), 1200);
-    } else {
-      fb.className = "feedback guided-hint";
-      if (attemptsL2 === 1) {
-        fb.textContent = "💡 Tutor Hint: Remember each base pair adds 1/3 nm. Multiply 1,500 by 1/3 for Sample B!";
-      } else {
-        fb.textContent = "🔎 Visual Guide: For Sample C, if 1/3 of base pairs equals 800 nm, scale up by 3 (800 × 3) to find total base pairs!";
-      }
-    }
-  }
-
-  // --- INTERACTIVE GRAPH CANVAS ENGINE ---
-  const canvas = document.getElementById('plotCanvas');
-  const ctx = canvas.getContext('2d');
-  
-  const targets = [
-    { x: 600, y: 200, hit: false, chkId: 'chk1' },
-    { x: 1500, y: 500, hit: false, chkId: 'chk2' },
-    { x: 2400, y: 800, hit: false, chkId: 'chk3' }
-  ];
-
-  let plottedPoints = [];
-  let isLineMode = false;
-  let isDrawingLine = false;
-  let lineStart = null;
-  let lineEnd = null;
-  let drawnLineValid = false;
-
-  function toScreenX(valX) {
-    const margin = 50;
-    const width = canvas.width - margin - 20;
-    return margin + (valX / 3000) * width;
-  }
-
-  function toScreenY(valY) {
-    const margin = 40;
-    const height = canvas.height - margin - 20;
-    return (canvas.height - margin) - (valY / 1000) * height;
-  }
-
-  function toValX(px) {
-    const margin = 50;
-    const width = canvas.width - margin - 20;
-    return ((px - margin) / width) * 3000;
-  }
-
-  function toValY(py) {
-    const margin = 40;
-    const height = canvas.height - margin - 20;
-    return (((canvas.height - margin) - py) / height) * 1000;
-  }
-
-  function drawGraphCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Grid lines
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 1;
-
-    for (let x = 0; x <= 3000; x += 300) {
-      const sx = toScreenX(x);
-      ctx.beginPath(); ctx.moveTo(sx, 10); ctx.lineTo(sx, canvas.height - 40); ctx.stroke();
-    }
-    for (let y = 0; y <= 1000; y += 100) {
-      const sy = toScreenY(y);
-      ctx.beginPath(); ctx.moveTo(50, sy); ctx.lineTo(canvas.width - 20, sy); ctx.stroke();
-    }
-
-    // Axes
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(50, 10); ctx.lineTo(50, canvas.height - 40); ctx.lineTo(canvas.width - 20, canvas.height - 40);
-    ctx.stroke();
-
-    // Axis Labels
-    ctx.fillStyle = '#475569';
-    ctx.font = '11px sans-serif';
-    for (let x = 0; x <= 3000; x += 600) {
-      ctx.fillText(x, toScreenX(x) - 10, canvas.height - 22);
-    }
-    for (let y = 0; y <= 1000; y += 200) {
-      ctx.fillText(y, 15, toScreenY(y) + 4);
-    }
-
-    // Axis Titles
-    ctx.font = 'bold 12px sans-serif';
-    ctx.fillText('Base Pairs (x)', canvas.width / 2 - 40, canvas.height - 5);
-
-    // Target guides (faint dots)
-    targets.forEach(t => {
-      ctx.fillStyle = 'rgba(2, 132, 199, 0.25)';
-      ctx.beginPath();
-      ctx.arc(toScreenX(t.x), toScreenY(t.y), 8, 0, Math.PI * 2);
-      ctx.fill();
+    // Input sanitization
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        let val = e.target.value;
+        if (val.includes('.') || val.includes('*')) {
+          e.target.value = val.replace(/[\.\*]/g, '');
+          alert("Decimals and star (*) symbols are not allowed! Enter whole numbers or fractions.");
+        }
+      });
     });
 
-    // Draw user-drawn connecting line
-    if (lineStart && lineEnd) {
-      ctx.strokeStyle = '#8b5cf6';
+    function setupFractionPair(numId, denId) {
+      const num = document.getElementById(numId);
+      const den = document.getElementById(denId);
+      if (!num || !den) return;
+
+      num.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === '/') {
+          e.preventDefault();
+          den.focus();
+        }
+      });
+    }
+
+    setupFractionPair('p1-num', 'p1-den');
+    setupFractionPair('p1-rule-num', 'p1-rule-den');
+
+    document.getElementById('p2-y1')?.addEventListener('input', e => {
+      document.getElementById('p2-c1').innerText = `(10, ${e.target.value || '?'})`;
+    });
+    document.getElementById('p2-y2')?.addEventListener('input', e => {
+      document.getElementById('p2-c2').innerText = `(15, ${e.target.value || '?'})`;
+    });
+    document.getElementById('p2-y3')?.addEventListener('input', e => {
+      document.getElementById('p2-c3').innerText = `(20, ${e.target.value || '?'})`;
+    });
+
+    function goToPage(pageNum) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page-${pageNum}`).classList.add('active');
+      currentPage = pageNum;
+
+      for (let i = 1; i <= 5; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        if (i <= pageNum) {
+          dot.className = 'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-teal-600 text-white';
+        } else {
+          dot.className = 'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-200 text-slate-500';
+        }
+      }
+
+      if (pageNum === 3) initPlotCanvas();
+      if (pageNum === 4) initLineCanvas();
+    }
+
+    function showMsg(id, type, text) {
+      const el = document.getElementById(id);
+      el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+      el.classList.add('border');
+      if (type === 'error') {
+        el.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+      } else {
+        el.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+      }
+      el.innerText = text;
+    }
+
+    function checkPage1() {
+      const num = document.getElementById('p1-num').value.trim();
+      const den = document.getElementById('p1-den').value.trim();
+      const rNum = document.getElementById('p1-rule-num').value.trim();
+      const rDen = document.getElementById('p1-rule-den').value.trim();
+
+      if (num === '17' && den === '5' && rNum === '17' && rDen === '5') {
+        showMsg('p1-feedback', 'success', 'Correct! You found that 1 rung = 17/5 nm, making the rule y = (17/5) · x.');
+        setTimeout(() => goToPage(2), 1200);
+      } else {
+        showMsg('p1-feedback', 'error', 'Hint: Divide total length (17) by total rungs (5) to find length per single rung.');
+      }
+    }
+
+    function checkPage2() {
+      const y1 = document.getElementById('p2-y1').value.trim();
+      const y2 = document.getElementById('p2-y2').value.trim();
+      const y3 = document.getElementById('p2-y3').value.trim();
+
+      if (y1 === '34' && y2 === '51' && y3 === '68') {
+        showMsg('p2-feedback', 'success', 'All measurements are correct! Let us plot them on a coordinate grid.');
+        setTimeout(() => goToPage(3), 1200);
+      } else {
+        showMsg('p2-feedback', 'error', 'Hint: Multiply each rung count by 17/5. For example: 10 × (17/5) = 34.');
+      }
+    }
+
+    // Canvas Engine Functions
+    function getCanvasCoords(canvas, xVal, yVal) {
+      const pad = 35;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+
+      const cx = pad + (xVal / 25) * w;
+      const cy = canvas.height - pad - (yVal / 80) * h;
+      return { x: cx, y: cy };
+    }
+
+    function getValuesFromCoords(canvas, px, py) {
+      const pad = 35;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+
+      const xVal = ((px - pad) / w) * 25;
+      const yVal = ((canvas.height - pad - py) / h) * 80;
+      return { x: xVal, y: yVal };
+    }
+
+    function drawGrid(ctx, canvas) {
+      const pad = 35;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+
+      ctx.strokeStyle = '#f1f5f9';
+      ctx.lineWidth = 1;
+
+      // Vertical lines
+      for (let i = 0; i <= 25; i += 5) {
+        const x = pad + (i / 25) * w;
+        ctx.beginPath();
+        ctx.moveTo(x, pad);
+        ctx.lineTo(x, canvas.height - pad);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px sans-serif';
+        ctx.fillText(i, x - 4, canvas.height - pad + 15);
+      }
+
+      // Horizontal lines
+      for (let j = 0; j <= 80; j += 10) {
+        const y = canvas.height - pad - (j / 80) * h;
+        ctx.beginPath();
+        ctx.moveTo(pad, y);
+        ctx.lineTo(canvas.width - pad, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px sans-serif';
+        ctx.fillText(j, pad - 22, y + 3);
+      }
+
+      // Main Axes
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pad, pad);
+      ctx.lineTo(pad, canvas.height - pad);
+      ctx.lineTo(canvas.width - pad, canvas.height - pad);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('Rungs (x)', canvas.width / 2 - 20, canvas.height - 6);
+      ctx.fillText('Length nm (y)', 4, 18);
+    }
+
+    function clearPlottedPoints() {
+      plottedPoints = [];
+      document.getElementById('point-count').innerText = `0 / 4`;
+      initPlotCanvas();
+    }
+
+    function initPlotCanvas() {
+      const canvas = document.getElementById('plotCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid(ctx, canvas);
+
+        // Draw user points with coordinate badges
+        plottedPoints.forEach(pt => {
+          const coords = getCanvasCoords(canvas, pt.x, pt.y);
+          
+          ctx.fillStyle = '#0d9488';
+          ctx.beginPath();
+          ctx.arc(coords.x, coords.y, 6, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '10px sans-serif';
+          ctx.fillText(`(${pt.x}, ${pt.y})`, coords.x + 8, coords.y - 4);
+        });
+      }
+
+      canvas.onclick = (e) => {
+        if (plottedPoints.length >= 4) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        const val = getValuesFromCoords(canvas, clickX, clickY);
+
+        // Teacher logic: Check proximity to any target point (tolerance of 3 units on x, 6 on y)
+        TARGET_POINTS.forEach(target => {
+          if (Math.abs(val.x - target.x) <= 2.5 && Math.abs(val.y - target.y) <= 6) {
+            if (!plottedPoints.some(p => p.x === target.x && p.y === target.y)) {
+              plottedPoints.push(target);
+              document.getElementById('point-count').innerText = `${plottedPoints.length} / 4`;
+              redraw();
+            }
+          }
+        });
+      };
+
+      redraw();
+    }
+
+    function checkPage3() {
+      if (plottedPoints.length === 4) {
+        showMsg('p3-feedback', 'success', 'Great job! All 4 points are accurately plotted on the graph.');
+        setTimeout(() => goToPage(4), 1200);
+      } else {
+        showMsg('p3-feedback', 'error', `You have plotted ${plottedPoints.length} out of 4 points correctly. Use the table values to click where each (x, y) coordinate belongs.`);
+      }
+    }
+
+    function initLineCanvas() {
+      const canvas = document.getElementById('lineCanvas');
+      const ctx = canvas.getContext('2d');
+      drawGrid(ctx, canvas);
+
+      TARGET_POINTS.forEach(pt => {
+        const coords = getCanvasCoords(canvas, pt.x, pt.y);
+        ctx.fillStyle = '#0d9488';
+        ctx.beginPath();
+        ctx.arc(coords.x, coords.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '10px sans-serif';
+        ctx.fillText(`(${pt.x}, ${pt.y})`, coords.x + 8, coords.y - 4);
+      });
+
+      if (isLineDrawn) {
+        drawProportionLine(ctx, canvas);
+      }
+    }
+
+    function drawLine() {
+      const canvas = document.getElementById('lineCanvas');
+      const ctx = canvas.getContext('2d');
+      isLineDrawn = true;
+      initLineCanvas();
+      drawProportionLine(ctx, canvas);
+      showMsg('p4-feedback', 'success', 'Notice how the line starts directly at origin (0,0)! This straight line through zero confirms a direct proportion.');
+    }
+
+    function drawProportionLine(ctx, canvas) {
+      const origin = getCanvasCoords(canvas, 0, 0);
+      const endPt = getCanvasCoords(canvas, 22, 74.8);
+
+      ctx.strokeStyle = '#0d9488';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(lineStart.x, lineStart.y);
-      ctx.lineTo(lineEnd.x, lineEnd.y);
+      ctx.moveTo(origin.x, origin.y);
+      ctx.lineTo(endPt.x, endPt.y);
       ctx.stroke();
     }
 
-    // Draw plotted points
-    plottedPoints.forEach(p => {
-      ctx.fillStyle = p.isTarget ? '#16a34a' : '#ef4444';
-      ctx.beginPath();
-      ctx.arc(toScreenX(p.x), toScreenY(p.y), 6, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  }
-
-  // Point Plotting and Line Dragging Handlers
-  canvas.addEventListener('mousedown', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    const clickX = (e.clientX - rect.left) * scaleX;
-    const clickY = (e.clientY - rect.top) * scaleY;
-
-    if (isLineMode) {
-      isDrawingLine = true;
-      lineStart = { x: clickX, y: clickY };
-      lineEnd = { x: clickX, y: clickY };
-      drawGraphCanvas();
-    } else {
-      const valX = toValX(clickX);
-      const valY = toValY(clickY);
-
-      let hitTarget = false;
-      targets.forEach(t => {
-        if (Math.abs(valX - t.x) < 180 && Math.abs(valY - t.y) < 60) {
-          t.hit = true;
-          hitTarget = true;
-          plottedPoints.push({ x: t.x, y: t.y, isTarget: true });
-          const chk = document.getElementById(t.chkId);
-          chk.className = "target-item done";
-          chk.textContent = `🟢 Point (${t.x.toLocaleString()}, ${t.y})`;
-        }
-      });
-
-      if (!hitTarget && valX >= 0 && valY >= 0) {
-        plottedPoints.push({ x: Math.round(valX), y: Math.round(valY), isTarget: false });
-      }
-
-      // Enable line mode button if all 3 points are plotted
-      if (targets.every(t => t.hit)) {
-        document.getElementById('btnDrawMode').disabled = false;
-        document.getElementById('step4Instructions').innerHTML = 
-          "<strong>Step B:</strong> Points plotted! Click <strong>'Connect Points with Line'</strong>, then click and drag a straight line from <strong>(0,0)</strong> through your plotted points.";
-      }
-
-      drawGraphCanvas();
-    }
-  });
-
-  canvas.addEventListener('mousemove', (e) => {
-    if (!isDrawingLine || !isLineMode) return;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    lineEnd = {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY
-    };
-    drawGraphCanvas();
-  });
-
-  canvas.addEventListener('mouseup', () => {
-    if (isDrawingLine && isLineMode) {
-      isDrawingLine = false;
-
-      // Validate line starts near origin (0,0) and ends near (2400, 800) or beyond
-      const startValX = toValX(lineStart.x);
-      const startValY = toValY(lineStart.y);
-      const endValX = toValX(lineEnd.x);
-      const endValY = toValY(lineEnd.y);
-
-      const nearOrigin = startValX < 250 && startValY < 120;
-      const spansPoints = endValX > 2000 && Math.abs(endValY - (endValX / 3)) < 150;
-
-      if (nearOrigin && spansPoints) {
-        drawnLineValid = true;
-        const chkLine = document.getElementById('chkLine');
-        chkLine.className = "target-item done";
-        chkLine.textContent = "🟢 Connected Line Through Origin";
-      }
-    }
-  });
-
-  function enableLineDrawing() {
-    isLineMode = true;
-    canvas.style.cursor = 'draw';
-    const fb = document.getElementById('feedback3');
-    fb.className = "feedback guided-hint";
-    fb.textContent = "✏️ Line Drawing Mode Active: Click and drag from (0,0) at the bottom-left through your 3 green points to draw your proportion line!";
-  }
-
-  function resetGraph() {
-    plottedPoints = [];
-    lineStart = null;
-    lineEnd = null;
-    isLineMode = false;
-    drawnLineValid = false;
-    canvas.style.cursor = 'crosshair';
-
-    targets.forEach(t => {
-      t.hit = false;
-      const chk = document.getElementById(t.chkId);
-      chk.className = "target-item";
-      chk.textContent = `⚪ Plot Point (${t.x.toLocaleString()}, ${t.y})`;
-    });
-
-    const chkLine = document.getElementById('chkLine');
-    chkLine.className = "target-item";
-    chkLine.textContent = "⚪ Connect Line from (0,0)";
-
-    document.getElementById('btnDrawMode').disabled = true;
-    document.getElementById('step4Instructions').innerHTML = 
-      "<strong>Step A:</strong> Click on the canvas grid below to plot points <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.";
-
-    document.getElementById('feedback3').style.display = 'none';
-    drawGraphCanvas();
-  }
-
-  function checkGraph() {
-    const fb = document.getElementById('feedback3');
-    const allHit = targets.every(t => t.hit);
-
-    if (!allHit) {
-      fb.className = "feedback guided-hint";
-      fb.textContent = "💡 Please plot all 3 points on the grid first: (600, 200), (1,500, 500), and (2,400, 800).";
-      return;
-    }
-
-    if (!drawnLineValid) {
-      fb.className = "feedback guided-hint";
-      fb.textContent = "✏️ Almost there! Click 'Connect Points with Line' and drag a straight line from (0,0) through all your points.";
-      return;
-    }
-
-    fb.className = "feedback correct";
-    fb.textContent = "🎯 Outstanding graphing! You plotted all coordinate points and connected them with a line passing straight through (0,0). Unlocking Step 5!";
-    setTimeout(() => unlockLevel(4), 1400);
-  }
-
-  // Step 5 Validation
-  function checkLevel4() {
-    attemptsL4++;
-    const ans = parseFloat(document.getElementById('ansFinal').value);
-    const fb = document.getElementById('feedback4');
-    const cert = document.getElementById('certificate');
-
-    if (ans === 4200) {
-      fb.className = "feedback correct";
-      fb.textContent = "🏆 Excellent evidence analysis! 1,400 nm requires exactly 4,200 base pairs.";
-      cert.style.display = "block";
-      
-      confetti({
-        particleCount: 140,
-        spread: 85,
-        origin: { y: 0.6 }
-      });
-    } else {
-      fb.className = "feedback guided-hint";
-      if (attemptsL4 === 1) {
-        fb.textContent = "💡 Tutor Hint: Look at your rate equation: Length = Base Pairs ÷ 3. So Base Pairs = Length × 3!";
+    function checkPage4() {
+      if (isLineDrawn) {
+        goToPage(5);
       } else {
-        fb.textContent = "🔎 Guided Step: Multiply 1,400 nm by 3 to scale up to the total base pair count.";
+        showMsg('p4-feedback', 'error', 'Click the "Draw Line Through Points" button to connect your points to the origin.');
       }
     }
-  }
-</script>
+
+    function checkPage5() {
+      const val = document.getElementById('p5-input').value.trim();
+
+      if (val === '25') {
+        showMsg('p5-feedback', 'success', 'Correct! 85 ÷ (17/5) = 85 × (5/17) = 25 rungs.');
+        document.getElementById('certificate').classList.remove('hidden');
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      } else {
+        showMsg('p5-feedback', 'error', 'Hint: Work backwards using division! 85 ÷ (17/5) is the same as 85 × (5/17).');
+      }
+    }
+  </script>
 </body>
 </html>
