@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DNA Quest: Direct Proportion Lab</title>
+  <title>DNA Quest: Direct Proportion Lab (Fractions)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
@@ -275,7 +275,7 @@
 <div class="container">
   <header>
     <h1>🧬 DNA Quest: Master Direct Proportion</h1>
-    <p>Forensic Genetic Lab — Mission Case File</p>
+    <p>Forensic Genetic Lab — Mission Case File (Fractional Proportions)</p>
     <div class="progress-bar-container">
       <div id="progressFill" class="progress-fill"></div>
     </div>
@@ -285,7 +285,7 @@
   <div id="level1" class="level-card">
     <span class="badge">Level 1: Calibration (The Known)</span>
     <h2>Calibration: Finding Constant k</h2>
-    <p>Every base pair (bp) adds a fixed physical distance to a DNA strand. Drag the slider to observe how length (y) changes as base pair count (x) grows.</p>
+    <p>Every base pair (bp) adds a fixed fractional distance to a DNA strand. Drag the slider to observe how physical length (y) scales with base pair count (x).</p>
     
     <div class="dna-container">
       <svg id="dnaSvg" width="100%" height="100" viewBox="0 0 600 100"></svg>
@@ -298,9 +298,9 @@
         <span id="bpValue" class="highlight">1000 bp</span>
       </div>
       <div class="output-box">
-        Physical Length (y) = <span id="lengthValue" class="highlight">340.0</span> nm
+        Physical Length (y) = <span id="lengthValue" class="highlight">340</span> nm
         <br>
-        Constant of Proportionality (k = y / x) = <span class="highlight">0.34 nm per bp</span>
+        Constant of Proportionality (k = y / x) = <span class="highlight">17/50 nm per bp</span>
       </div>
     </div>
 
@@ -311,14 +311,14 @@
   <div id="level2" class="level-card locked" data-req="1">
     <span class="badge">Level 2: Standard Analysis</span>
     <h2>Complete the Proportionality Table</h2>
-    <p>Use the direct proportion formula <strong>y = 0.34 * x</strong> to compute the physical lengths for the unknown reference samples:</p>
+    <p>Use the direct proportion fraction formula <strong>y = (17/50) * x</strong> to calculate the missing physical lengths:</p>
 
     <table>
       <thead>
         <tr>
           <th>Sample</th>
           <th>Base Pairs (x)</th>
-          <th>Formula (y = 0.34 * x)</th>
+          <th>Formula: y = (17/50) * x</th>
           <th>Physical Length in nm (y)</th>
         </tr>
       </thead>
@@ -326,19 +326,19 @@
         <tr>
           <td>Sample A</td>
           <td>1,500</td>
-          <td>0.34 * 1500</td>
+          <td>(17/50) * 1500</td>
           <td>510</td>
         </tr>
         <tr>
           <td>Sample B</td>
           <td>3,000</td>
-          <td>0.34 * 3000</td>
+          <td>(17/50) * 3000</td>
           <td><input type="number" id="ansB" placeholder="?"></td>
         </tr>
         <tr>
           <td>Sample C</td>
           <td>5,000</td>
-          <td>0.34 * 5000</td>
+          <td>(17/50) * 5000</td>
           <td><input type="number" id="ansC" placeholder="?"></td>
         </tr>
       </tbody>
@@ -351,8 +351,8 @@
   <!-- LEVEL 3 -->
   <div id="level3" class="level-card locked" data-req="2">
     <span class="badge">Level 3: Calibration Curve</span>
-    <h2>The Direct Proportion Model (y = k * x)</h2>
-    <p>Notice how a directly proportional relationship forms a perfectly straight line passing through the origin (0, 0).</p>
+    <h2>The Direct Proportion Model: y = (17/50) * x</h2>
+    <p>Notice how a directly proportional relationship forms a straight line starting directly at the origin (0, 0).</p>
 
     <div class="chart-container">
       <canvas id="proportionChart"></canvas>
@@ -365,7 +365,7 @@
   <div id="level4" class="level-card locked" data-req="3">
     <span class="badge">Level 4: Critical Evidence</span>
     <h2>Predict the Chromosome Fragment Length</h2>
-    <p>An unknown target gene segment recovered from evidence contains <strong>8,000 base pairs</strong>. Predict its physical length in nanometers to filter the sample.</p>
+    <p>An unknown target gene segment recovered from evidence contains <strong>8,000 base pairs</strong>. Predict its physical length in nanometers using the rate 17/50.</p>
 
     <div style="margin: 15px 0;">
       <label for="ansFinal"><strong>Calculated Length (y in nm):</strong> </label>
@@ -378,7 +378,7 @@
     <div id="certificate" class="certificate">
       <h2>🏆 Certificate of Completion</h2>
       <p>This certifies that you have successfully mastered the application of <strong>Direct Proportion</strong> to <strong>Genetics & DNA Structure</strong>!</p>
-      <p style="margin-top:10px; color:#34d399;">Calculated Rate: k = 0.34 nm/bp | Target Length: 2,720 nm</p>
+      <p style="margin-top:10px; color:#34d399;">Calculated Constant: k = 17/50 nm/bp | Target Length: 2,720 nm</p>
     </div>
   </div>
 </div>
@@ -390,7 +390,9 @@
 
   function drawDna(bp) {
     document.getElementById('bpValue').textContent = bp + ' bp';
-    document.getElementById('lengthValue').textContent = (bp * 0.34).toFixed(1);
+    // Exact fractional calculation: (17/50) * bp
+    const lengthNm = Math.round((17 / 50) * bp);
+    document.getElementById('lengthValue').textContent = lengthNm;
 
     svg.innerHTML = '';
     const rungs = Math.floor(bp / 100);
@@ -452,11 +454,11 @@
 
     if (b === 1020 && c === 1700) {
       fb.className = "feedback correct";
-      fb.textContent = "✓ Excellent! 3000 * 0.34 = 1020 nm and 5000 * 0.34 = 1700 nm. Level 3 Unlocked!";
+      fb.textContent = "✓ Excellent! (17/50) * 3000 = 1020 nm and (17/50) * 5000 = 1700 nm. Level 3 Unlocked!";
       setTimeout(() => unlockLevel(3), 1200);
     } else {
       fb.className = "feedback incorrect";
-      fb.textContent = "✗ Incorrect values. Remember: Physical Length = 0.34 * Base Pairs.";
+      fb.textContent = "✗ Incorrect values. Remember: Physical Length = (17/50) * Base Pairs.";
     }
   }
 
@@ -467,7 +469,7 @@
       data: {
         labels: [0, 1500, 3000, 5000, 8000],
         datasets: [{
-          label: 'Direct Proportion (y = 0.34 * x)',
+          label: 'Direct Proportion: y = (17/50) * x',
           data: [0, 510, 1020, 1700, 2720],
           borderColor: '#3b82f6',
           backgroundColor: 'rgba(59, 130, 246, 0.15)',
@@ -507,7 +509,7 @@
 
     if (ans === 2720) {
       fb.className = "feedback correct";
-      fb.textContent = "🏆 Correct! 8,000 * 0.34 = 2,720 nm. Target sequence confirmed!";
+      fb.textContent = "🏆 Correct! (17/50) * 8000 = 2,720 nm. Target sequence confirmed!";
       cert.style.display = "block";
       
       // Trigger confetti celebration
@@ -518,7 +520,7 @@
       });
     } else {
       fb.className = "feedback incorrect";
-      fb.textContent = "✗ Incorrect prediction. Multiply 8000 base pairs by the constant 0.34 nm/bp.";
+      fb.textContent = "✗ Incorrect prediction. Calculate: (17 * 8000) / 50.";
     }
   }
 </script>
