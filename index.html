@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DNA Quest: Direct Proportion Lab (Fractions)</title>
+  <title>DNA Quest: Tactile Direct Proportion Lab</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-light: #3b82f6;
-      --accent: #10b981;
-      --danger: #ef4444;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f59e0b;
+      --bg: #f0fdf4;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
     }
 
     * {
@@ -27,108 +28,136 @@
     }
 
     body {
-      background-color: var(--bg);
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
       color: var(--text);
       padding: 20px;
       min-height: 100vh;
+      user-select: none;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
     }
 
     header {
       text-align: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      padding: 22px;
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      border-radius: 16px;
       margin-bottom: 25px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      color: white;
+      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.2);
     }
 
     header h1 {
-      font-size: 2rem;
-      color: #60a5fa;
-      margin-bottom: 8px;
+      font-size: 2.1rem;
+      margin-bottom: 6px;
     }
 
     header p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      color: #e0f2fe;
+      font-size: 1rem;
     }
 
     .progress-bar-container {
       width: 100%;
-      background: #0f172a;
+      background: rgba(255, 255, 255, 0.3);
       height: 12px;
       border-radius: 6px;
       margin-top: 15px;
       overflow: hidden;
-      border: 1px solid var(--border);
     }
 
     .progress-fill {
       height: 100%;
-      width: 25%;
-      background: linear-gradient(90deg, #3b82f6, #10b981);
+      width: 20%;
+      background: linear-gradient(90deg, #34d399, #facc15);
+      border-radius: 6px;
       transition: width 0.4s ease;
     }
 
     .level-card {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 25px;
       margin-bottom: 25px;
       position: relative;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      border-top: 6px solid var(--primary);
     }
 
+    #level0 { border-top-color: #38bdf8; }
+    #level1 { border-top-color: var(--accent-green); }
+    #level2 { border-top-color: var(--primary); }
+    #level3 { border-top-color: var(--accent-purple); }
+    #level4 { border-top-color: var(--accent-orange); }
+
     .level-card.locked {
-      opacity: 0.4;
+      opacity: 0.45;
       pointer-events: none;
-      filter: grayscale(90%);
+      filter: grayscale(70%);
     }
 
     .level-card.locked::after {
-      content: "🔒 Locked — Complete Level " attr(data-req) " First";
+      content: "🔒 Locked — Complete Step " attr(data-step) " First";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.95);
-      color: #f8fafc;
+      background: #0f172a;
+      color: #ffffff;
       padding: 12px 24px;
       border-radius: 30px;
       font-weight: bold;
-      border: 1px solid var(--primary-light);
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
 
     .badge {
       display: inline-block;
-      background: var(--primary);
-      color: #93c5fd;
-      padding: 4px 12px;
+      color: white;
+      padding: 5px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: bold;
       text-transform: uppercase;
       margin-bottom: 12px;
-      border: 1px solid #3b82f6;
     }
+
+    #level0 .badge { background: #0284c7; }
+    #level1 .badge { background: var(--accent-green); }
+    #level2 .badge { background: var(--primary); }
+    #level3 .badge { background: var(--accent-purple); }
+    #level4 .badge { background: var(--accent-orange); }
 
     .dna-container {
       width: 100%;
       height: 140px;
-      background: #090d16;
-      border-radius: 8px;
+      background: #0f172a;
+      border-radius: 12px;
       margin: 15px 0;
-      border: 1px solid var(--border);
+      position: relative;
       overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+      cursor: grab;
+    }
+
+    .dna-container:active {
+      cursor: grabbing;
+    }
+
+    .drag-handle-hint {
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      background: rgba(255,255,255,0.15);
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      pointer-events: none;
     }
 
     .controls {
@@ -148,57 +177,63 @@
       flex: 1;
       height: 8px;
       border-radius: 4px;
-      background: #334155;
+      background: #cbd5e1;
       outline: none;
+      accent-color: var(--primary);
     }
 
     .output-box {
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
       font-size: 1rem;
+      color: #334155;
     }
 
     .highlight {
-      color: #34d399;
+      color: #0284c7;
       font-weight: bold;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 15px 0;
-      background: #0f172a;
-      border-radius: 8px;
+      margin: 16px 0;
+      background: #ffffff;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     th, td {
-      border: 1px solid var(--border);
-      padding: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 10px;
       text-align: center;
     }
 
     th {
-      background-color: #1e3a8a;
-      color: #f8fafc;
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
     }
 
     input[type=number] {
-      width: 100px;
+      width: 110px;
       padding: 8px;
       text-align: center;
-      background: #1e293b;
-      border: 1px solid var(--border);
-      color: #fff;
-      border-radius: 6px;
-      font-size: 1rem;
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      color: #0f172a;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
     }
 
     input[type=number]:focus {
       outline: none;
-      border-color: var(--primary-light);
+      border-color: var(--primary);
+      background: #ffffff;
     }
 
     .btn {
@@ -206,44 +241,46 @@
       color: white;
       border: none;
       padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
+      transition: transform 0.15s, box-shadow 0.2s;
       display: inline-block;
-      margin-top: 15px;
+      margin-top: 12px;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.35);
     }
 
-    .btn:active {
-      transform: translateY(0);
+    .btn-secondary {
+      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      margin-left: 8px;
     }
 
     .feedback {
       margin-top: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      font-weight: bold;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 600;
       display: none;
+      transition: all 0.3s ease;
+    }
+
+    .feedback.guided-hint {
+      display: block;
+      background: #fef3c7;
+      color: #92400e;
+      border: 2px solid #fde68a;
     }
 
     .feedback.correct {
       display: block;
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid #10b981;
-    }
-
-    .feedback.incorrect {
-      display: block;
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid #ef4444;
+      background: #dcfce7;
+      color: #15803d;
+      border: 2px solid #86efac;
     }
 
     .chart-container {
@@ -255,18 +292,37 @@
 
     .certificate {
       display: none;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 2px solid #f59e0b;
-      border-radius: 12px;
-      padding: 30px;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 3px solid #f59e0b;
+      border-radius: 16px;
+      padding: 25px;
       text-align: center;
       margin-top: 20px;
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
     }
 
     .certificate h2 {
-      color: #f59e0b;
+      color: #b45309;
       font-size: 1.8rem;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+
+    .info-box {
+      background: #e0f2fe;
+      border-left: 5px solid #0284c7;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      color: #0369a1;
+    }
+
+    .workshop-panel {
+      background: #f8fafc;
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -274,142 +330,194 @@
 
 <div class="container">
   <header>
-    <h1>🧬 DNA Quest: Master Direct Proportion</h1>
-    <p>Forensic Genetic Lab — Mission Case File (Fractional Proportions)</p>
+    <h1>🧬 DNA Quest: Tactile Direct Proportion Lab</h1>
+    <p>Explore physical scale models to discover proportional rate laws!</p>
     <div class="progress-bar-container">
       <div id="progressFill" class="progress-fill"></div>
     </div>
   </header>
 
-  <!-- LEVEL 1 -->
-  <div id="level1" class="level-card">
-    <span class="badge">Level 1: Calibration (The Known)</span>
-    <h2>Calibration: Finding Constant k</h2>
-    <p>Every base pair (bp) adds a fixed fractional distance to a DNA strand. Drag the slider to observe how physical length (y) scales with base pair count (x).</p>
+  <!-- STEP 1 (Level 0): Tactile DNA Assembly -->
+  <div id="level0" class="level-card" data-step="0">
+    <span class="badge">Step 1: Tactile Manipulative</span>
+    <h2>1. The Physical DNA Ladder</h2>
     
-    <div class="dna-container">
-      <svg id="dnaSvg" width="100%" height="100" viewBox="0 0 600 100"></svg>
+    <div class="info-box">
+      <strong>🧬 Concrete Model:</strong> DNA forms a twisted ladder shape called a <strong>Double Helix</strong>. 
+      Every rung is a paired base pair (bp). Drag or stretch the helix below to observe how each added rung extends total physical length.
+    </div>
+
+    <div class="dna-container" id="tactileDnaContainer">
+      <span class="drag-handle-hint">👈 Drag Strand Right to Stretch 👉</span>
+      <svg id="dnaSvg0" width="100%" height="100%" viewBox="0 0 600 120"></svg>
     </div>
 
     <div class="controls">
       <div class="slider-group">
-        <label for="bpSlider"><strong>Base Pairs (x):</strong></label>
-        <input type="range" id="bpSlider" min="500" max="4000" step="500" value="1000">
-        <span id="bpValue" class="highlight">1000 bp</span>
+        <label for="bpSlider0"><strong>Rung Count (Base Pairs, x):</strong></label>
+        <input type="range" id="bpSlider0" min="300" max="1800" step="300" value="300">
+        <span id="bpValue0" class="highlight">300 bp</span>
       </div>
       <div class="output-box">
-        Physical Length (y) = <span id="lengthValue" class="highlight">340</span> nm
-        <br>
-        Constant of Proportionality (k = y / x) = <span class="highlight">17/50 nm per bp</span>
+        Measured Physical Strand Length (y) = <span id="lengthValue0" class="highlight">100</span> nm
       </div>
     </div>
 
-    <button class="btn" onclick="unlockLevel(2)">Verify Calibration & Unlock Level 2 🔓</button>
+    <button class="btn" onclick="unlockLevel(1)">Lock In Rungs & Move to Calibration 🔓</button>
   </div>
 
-  <!-- LEVEL 2 -->
-  <div id="level2" class="level-card locked" data-req="1">
-    <span class="badge">Level 2: Standard Analysis</span>
-    <h2>Complete the Proportionality Table</h2>
-    <p>Use the direct proportion fraction formula <strong>y = (17/50) * x</strong> to calculate the missing physical lengths:</p>
+  <!-- STEP 2 (Level 1): Calibration & Unit Rate k -->
+  <div id="level1" class="level-card locked" data-step="1">
+    <span class="badge">Step 2: Concrete-to-Abstract Bridge</span>
+    <h2>2. Measuring Constant Rate (k)</h2>
+    <p style="color: var(--text-muted); margin-top: 4px;">
+      In Direct Proportion, <strong>y = k · x</strong>. Adjust the base pairs to find the constant rate factor connecting physical space to genetic count.
+    </p>
+    
+    <div class="dna-container">
+      <svg id="dnaSvg1" width="100%" height="100%" viewBox="0 0 600 120"></svg>
+    </div>
+
+    <div class="controls">
+      <div class="slider-group">
+        <label for="bpSlider1"><strong>Base Pairs (x):</strong></label>
+        <input type="range" id="bpSlider1" min="300" max="3000" step="300" value="300">
+        <span id="bpValue1" class="highlight">300 bp</span>
+      </div>
+      <div class="output-box">
+        Physical Length (y) = <span id="lengthValue1" class="highlight">100</span> nm
+        <br>
+        Constant Rate (k = y / x) = <span class="highlight">1/3 nm per base pair</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="unlockLevel(2)">Confirm Rate & Open Data Table 🔓</button>
+  </div>
+
+  <!-- STEP 3 (Level 2): Proportionality Table Practice -->
+  <div id="level2" class="level-card locked" data-step="2">
+    <span class="badge">Step 3: Proportionality Table</span>
+    <h2>3. Complete the Sample Measurement Table</h2>
+    <p style="color: var(--text-muted); margin-top: 4px;">
+      Apply the constant model <strong>y = 1/3 · x</strong> to determine missing parameters:
+    </p>
 
     <table>
       <thead>
         <tr>
-          <th>Sample</th>
+          <th>DNA Sample</th>
           <th>Base Pairs (x)</th>
-          <th>Formula: y = (17/50) * x</th>
-          <th>Physical Length in nm (y)</th>
+          <th>Proportional Model</th>
+          <th>Strand Length in nm (y)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Sample A</td>
-          <td>1,500</td>
-          <td>(17/50) * 1500</td>
-          <td>510</td>
+          <td>600</td>
+          <td>1/3 · 600</td>
+          <td>200</td>
         </tr>
         <tr>
           <td>Sample B</td>
-          <td>3,000</td>
-          <td>(17/50) * 3000</td>
-          <td><input type="number" id="ansB" placeholder="?"></td>
+          <td>1,500</td>
+          <td>1/3 · 1500</td>
+          <td><input type="number" id="ansB" placeholder="? nm"></td>
         </tr>
         <tr>
           <td>Sample C</td>
-          <td>5,000</td>
-          <td>(17/50) * 5000</td>
-          <td><input type="number" id="ansC" placeholder="?"></td>
+          <td><input type="number" id="ansC_bp" placeholder="? bp"></td>
+          <td>1/3 · x = 800</td>
+          <td>800</td>
         </tr>
       </tbody>
     </table>
 
-    <button class="btn" onclick="checkLevel2()">Submit Analysis 🎯</button>
+    <button class="btn" onclick="checkLevel2()">Validate Table 🎯</button>
     <div id="feedback2" class="feedback"></div>
   </div>
 
-  <!-- LEVEL 3 -->
-  <div id="level3" class="level-card locked" data-req="2">
-    <span class="badge">Level 3: Calibration Curve</span>
-    <h2>The Direct Proportion Model: y = (17/50) * x</h2>
-    <p>Notice how a directly proportional relationship forms a straight line starting directly at the origin (0, 0).</p>
+  <!-- STEP 4 (Level 3): Graphical Calibration & Open Workshop -->
+  <div id="level3" class="level-card locked" data-step="3">
+    <span class="badge">Step 4: Calibration Curve & Workshop</span>
+    <h2>4. Line Graph & Strategy Exploration</h2>
+    <p style="color: var(--text-muted); margin-top: 4px;">
+      A direct proportion graph forms a straight line passing through origin <strong>(0, 0)</strong>.
+    </p>
 
     <div class="chart-container">
       <canvas id="proportionChart"></canvas>
     </div>
 
-    <button class="btn" onclick="unlockLevel(4)">Proceed to Final Case File 🚀</button>
+    <!-- Critical Thinking Workshop -->
+    <div class="workshop-panel">
+      <h3>💡 Open-Ended DNA Strategy Workshop</h3>
+      <p style="color: var(--text-muted); font-size:0.9rem; margin-top: 4px;">
+        Test alternate strategy pathways! Try different base pair values below to see how your constant rate scales the target segment in real-time.
+      </p>
+      <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+        <input type="number" id="workshopBp" value="3300" step="300">
+        <span>Base Pairs ➔ Target Length = </span>
+        <strong id="workshopResult" class="highlight">1100 nm</strong>
+      </div>
+    </div>
+
+    <button class="btn" onclick="unlockLevel(4)">Proceed to Evidence Analysis 🚀</button>
   </div>
 
-  <!-- LEVEL 4 -->
-  <div id="level4" class="level-card locked" data-req="3">
-    <span class="badge">Level 4: Critical Evidence</span>
-    <h2>Predict the Chromosome Fragment Length</h2>
-    <p>An unknown target gene segment recovered from evidence contains <strong>8,000 base pairs</strong>. Predict its physical length in nanometers using the rate 17/50.</p>
+  <!-- STEP 5 (Level 4): Forensic Evidence Prediction -->
+  <div id="level4" class="level-card locked" data-step="4">
+    <span class="badge">Step 5: Applied Challenge</span>
+    <h2>5. Forensic Gene Sequence Challenge</h2>
+    <p style="color: var(--text-muted); margin-top: 4px;">
+      A crime scene evidence sample measures <strong>1,400 nanometers</strong> in length. 
+      Using your rate of <strong>1/3 nm per base pair</strong>, determine the exact base pair count (x).
+    </p>
 
-    <div style="margin: 15px 0;">
-      <label for="ansFinal"><strong>Calculated Length (y in nm):</strong> </label>
-      <input type="number" id="ansFinal" placeholder="Enter nm">
-      <button class="btn" onclick="checkLevel4()">Submit Final Prediction 🏆</button>
+    <div style="margin: 20px 0;">
+      <label for="ansFinal"><strong>Base Pair Count (x):</strong> </label>
+      <input type="number" id="ansFinal" placeholder="Enter bp">
+      <button class="btn" onclick="checkLevel4()">Submit Analysis 🏆</button>
     </div>
     
     <div id="feedback4" class="feedback"></div>
 
     <div id="certificate" class="certificate">
-      <h2>🏆 Certificate of Completion</h2>
-      <p>This certifies that you have successfully mastered the application of <strong>Direct Proportion</strong> to <strong>Genetics & DNA Structure</strong>!</p>
-      <p style="margin-top:10px; color:#34d399;">Calculated Constant: k = 17/50 nm/bp | Target Length: 2,720 nm</p>
+      <h2>🏆 Proportionality Specialist!</h2>
+      <p style="color: #78350f;">You successfully mastered direct proportion models across visual, numeric, and graphical representations!</p>
+      <p style="margin-top:12px; color:#047857; font-weight:bold;">Established Rate (k) = 1/3 nm/bp | Target Sequence = 4,200 base pairs</p>
     </div>
   </div>
 </div>
 
 <script>
-  // DNA Helix Animation
-  const slider = document.getElementById('bpSlider');
-  const svg = document.getElementById('dnaSvg');
+  // State and Calibration Variables
+  let currentStep = 0;
+  let attemptsL2 = 0;
+  let attemptsL4 = 0;
 
-  function drawDna(bp) {
-    document.getElementById('bpValue').textContent = bp + ' bp';
-    // Exact fractional calculation: (17/50) * bp
-    const lengthNm = Math.round((17 / 50) * bp);
-    document.getElementById('lengthValue').textContent = lengthNm;
-
+  // Render SVG DNA Helix
+  function renderHelix(svgId, bp) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
     svg.innerHTML = '';
-    const rungs = Math.floor(bp / 100);
-    const spacing = 580 / rungs;
 
-    let strand1 = "M 10 30 ";
-    let strand2 = "M 10 70 ";
+    const lengthNm = Math.round(bp / 3);
+    const rungs = Math.floor(bp / 60);
+    const spacing = 560 / Math.max(rungs, 4);
+
+    let strand1 = "M 10 35 ";
+    let strand2 = "M 10 85 ";
 
     for (let i = 0; i <= rungs; i++) {
-      const x = 10 + i * spacing;
-      const y1 = 50 + 20 * Math.sin(i * 0.5);
-      const y2 = 50 - 20 * Math.sin(i * 0.5);
+      const x = 15 + i * spacing;
+      const y1 = 60 + 25 * Math.sin(i * 0.65);
+      const y2 = 60 - 25 * Math.sin(i * 0.65);
 
       const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
       line.setAttribute("x1", x); line.setAttribute("y1", y1);
       line.setAttribute("x2", x); line.setAttribute("y2", y2);
-      line.setAttribute("stroke", i % 2 === 0 ? "#ef4444" : "#10b981");
+      line.setAttribute("stroke", i % 2 === 0 ? "#f43f5e" : "#10b981");
       line.setAttribute("stroke-width", "3");
       svg.appendChild(line);
 
@@ -419,60 +527,108 @@
 
     const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path1.setAttribute("d", strand1);
-    path1.setAttribute("stroke", "#3b82f6");
+    path1.setAttribute("stroke", "#38bdf8");
     path1.setAttribute("fill", "none");
     path1.setAttribute("stroke-width", "4");
     svg.appendChild(path1);
 
     const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path2.setAttribute("d", strand2);
-    path2.setAttribute("stroke", "#3b82f6");
+    path2.setAttribute("stroke", "#38bdf8");
     path2.setAttribute("fill", "none");
     path2.setAttribute("stroke-width", "4");
     svg.appendChild(path2);
   }
 
-  slider.addEventListener('input', (e) => drawDna(e.target.value));
-  drawDna(1000);
+  // Step 1: Tactile Manipulative Listeners
+  const s0 = document.getElementById('bpSlider0');
+  s0.addEventListener('input', (e) => {
+    const bp = e.target.value;
+    document.getElementById('bpValue0').textContent = bp + ' bp';
+    document.getElementById('lengthValue0').textContent = Math.round(bp / 3);
+    renderHelix('dnaSvg0', bp);
+  });
 
-  // Unlocking Mechanics
+  // Dragging support for visual manipulative feel
+  const tactileContainer = document.getElementById('tactileDnaContainer');
+  let isDragging = false;
+
+  tactileContainer.addEventListener('mousedown', () => isDragging = true);
+  window.addEventListener('mouseup', () => isDragging = false);
+  tactileContainer.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const rect = tactileContainer.getBoundingClientRect();
+    const offsetX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const pct = offsetX / rect.width;
+    const newBp = Math.round((pct * 1500 + 300) / 300) * 300;
+    s0.value = Math.min(1800, Math.max(300, newBp));
+    s0.dispatchEvent(new Event('input'));
+  });
+
+  // Step 2: Slider Listeners
+  const s1 = document.getElementById('bpSlider1');
+  s1.addEventListener('input', (e) => {
+    const bp = e.target.value;
+    document.getElementById('bpValue1').textContent = bp + ' bp';
+    document.getElementById('lengthValue1').textContent = Math.round(bp / 3);
+    renderHelix('dnaSvg1', bp);
+  });
+
+  // Initial renders
+  renderHelix('dnaSvg0', 300);
+  renderHelix('dnaSvg1', 300);
+
+  // Progressive Unlocking Logic
   function unlockLevel(lvlNum) {
+    currentStep = lvlNum;
     const card = document.getElementById('level' + lvlNum);
     card.classList.remove('locked');
     card.scrollIntoView({ behavior: 'smooth' });
 
-    // Update progress bar
-    document.getElementById('progressFill').style.width = (lvlNum * 25) + '%';
+    document.getElementById('progressFill').style.width = ((lvlNum + 1) * 20) + '%';
 
     if (lvlNum === 3) initChart();
   }
 
+  // Responsive Mistakes Design: Step 3 Validation
   function checkLevel2() {
+    attemptsL2++;
     const b = parseFloat(document.getElementById('ansB').value);
-    const c = parseFloat(document.getElementById('ansC').value);
+    const c_bp = parseFloat(document.getElementById('ansC_bp').value);
     const fb = document.getElementById('feedback2');
 
-    if (b === 1020 && c === 1700) {
+    if (b === 500 && c_bp === 2400) {
       fb.className = "feedback correct";
-      fb.textContent = "✓ Excellent! (17/50) * 3000 = 1020 nm and (17/50) * 5000 = 1700 nm. Level 3 Unlocked!";
+      fb.textContent = "✨ Great calculation! 1/3 · 1500 = 500 nm and 2,400 base pairs produces 800 nm. Moving to Step 4!";
       setTimeout(() => unlockLevel(3), 1200);
     } else {
-      fb.className = "feedback incorrect";
-      fb.textContent = "✗ Incorrect values. Remember: Physical Length = (17/50) * Base Pairs.";
+      fb.className = "feedback guided-hint";
+      if (attemptsL2 === 1) {
+        fb.textContent = "💡 Tutor Hint: Remember that each base pair provides 1/3 nm. Multiply 1,500 by 1/3 for Sample B!";
+      } else {
+        fb.textContent = "🔎 Visual Guide: For Sample C, if 1/3 of base pairs equals 800 nm, scale up by 3 (800 × 3) to find the total base pairs!";
+      }
     }
   }
 
+  // Open-ended Workshop Listener
+  document.getElementById('workshopBp').addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value) || 0;
+    document.getElementById('workshopResult').textContent = Math.round(val / 3) + ' nm';
+  });
+
+  // Chart Rendering
   function initChart() {
     const ctx = document.getElementById('proportionChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [0, 1500, 3000, 5000, 8000],
+        labels: [0, 600, 1500, 2400, 4200],
         datasets: [{
-          label: 'Direct Proportion: y = (17/50) * x',
-          data: [0, 510, 1020, 1700, 2720],
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.15)',
+          label: 'Direct Proportion Line: y = 1/3 · x',
+          data: [0, 200, 500, 800, 1400],
+          borderColor: '#0284c7',
+          backgroundColor: 'rgba(2, 132, 199, 0.1)',
           borderWidth: 3,
           pointBackgroundColor: '#ef4444',
           pointRadius: 6,
@@ -484,43 +640,46 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: '#f8fafc' } }
+          legend: { labels: { color: '#1e293b', font: { weight: 'bold' } } }
         },
         scales: {
           x: {
-            title: { display: true, text: 'Number of Base Pairs (x)', color: '#94a3b8' },
-            ticks: { color: '#94a3b8' },
-            grid: { color: '#334155' }
+            title: { display: true, text: 'Base Pairs (x)', color: '#475569' },
+            grid: { color: '#cbd5e1' }
           },
           y: {
-            title: { display: true, text: 'Physical Length in nm (y)', color: '#94a3b8' },
-            ticks: { color: '#94a3b8' },
-            grid: { color: '#334155' }
+            title: { display: true, text: 'Physical Length in nm (y)', color: '#475569' },
+            grid: { color: '#cbd5e1' }
           }
         }
       }
     });
   }
 
+  // Responsive Mistakes Design: Step 5 Final Challenge Validation
   function checkLevel4() {
+    attemptsL4++;
     const ans = parseFloat(document.getElementById('ansFinal').value);
     const fb = document.getElementById('feedback4');
     const cert = document.getElementById('certificate');
 
-    if (ans === 2720) {
+    if (ans === 4200) {
       fb.className = "feedback correct";
-      fb.textContent = "🏆 Correct! (17/50) * 8000 = 2,720 nm. Target sequence confirmed!";
+      fb.textContent = "🏆 Excellent evidence analysis! 1,400 nm requires exactly 4,200 base pairs.";
       cert.style.display = "block";
       
-      // Trigger confetti celebration
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 140,
+        spread: 85,
         origin: { y: 0.6 }
       });
     } else {
-      fb.className = "feedback incorrect";
-      fb.textContent = "✗ Incorrect prediction. Calculate: (17 * 8000) / 50.";
+      fb.className = "feedback guided-hint";
+      if (attemptsL4 === 1) {
+        fb.textContent = "💡 Tutor Hint: Look at your rate: Length = Base Pairs ÷ 3. So Base Pairs = Length × 3!";
+      } else {
+        fb.textContent = "🔎 Guided Step: Multiply 1,400 nm by 3 to scale up to the total base pair count.";
+      }
     }
   }
 </script>
