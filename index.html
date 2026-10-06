@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DNA Quest: Tactile Direct Proportion Lab</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>DNA Quest: Interactive Graphing & Direct Proportion Lab</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
     :root {
@@ -256,7 +255,7 @@
     }
 
     .btn-secondary {
-      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       margin-left: 8px;
     }
 
@@ -283,11 +282,47 @@
       border: 2px solid #86efac;
     }
 
-    .chart-container {
+    /* Interactive Graph Canvas Styles */
+    .graph-wrapper {
       position: relative;
-      height: 320px;
       width: 100%;
+      background: #f8fafc;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
       margin-top: 15px;
+    }
+
+    #plotCanvas {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: crosshair;
+      display: block;
+      width: 100%;
+      height: 320px;
+    }
+
+    .target-checklist {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding: 10px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .target-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .target-item.done {
+      color: #16a34a;
     }
 
     .certificate {
@@ -316,22 +351,14 @@
       font-size: 0.95rem;
       color: #0369a1;
     }
-
-    .workshop-panel {
-      background: #f8fafc;
-      border: 2px dashed #94a3b8;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 15px;
-    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <header>
-    <h1>🧬 DNA Quest: Tactile Direct Proportion Lab</h1>
-    <p>Explore physical scale models to discover proportional rate laws!</p>
+    <h1>🧬 DNA Quest: Interactive Graphing & Direct Proportion Lab</h1>
+    <p>Explore physical DNA models, plot data points, and connect rate laws!</p>
     <div class="progress-bar-container">
       <div id="progressFill" class="progress-fill"></div>
     </div>
@@ -343,8 +370,8 @@
     <h2>1. The Physical DNA Ladder</h2>
     
     <div class="info-box">
-      <strong>🧬 Concrete Model:</strong> DNA forms a twisted ladder shape called a <strong>Double Helix</strong>. 
-      Every rung is a paired base pair (bp). Drag or stretch the helix below to observe how each added rung extends total physical length.
+      <strong>🧬 Concrete Model:</strong> DNA forms a twisted ladder shape called a <strong>Double Helix</strong>[cite: 1, 2, 3]. 
+      Every rung is a paired base pair (bp)[cite: 1, 2, 3]. Drag or stretch the helix below to observe how each added rung extends total physical length[cite: 1, 2, 3].
     </div>
 
     <div class="dna-container" id="tactileDnaContainer">
@@ -371,7 +398,7 @@
     <span class="badge">Step 2: Concrete-to-Abstract Bridge</span>
     <h2>2. Measuring Constant Rate (k)</h2>
     <p style="color: var(--text-muted); margin-top: 4px;">
-      In Direct Proportion, <strong>y = k · x</strong>. Adjust the base pairs to find the constant rate factor connecting physical space to genetic count.
+      In Direct Proportion, <strong>y = k · x</strong>. Adjust base pairs to find the constant rate factor connecting physical space to genetic count.
     </p>
     
     <div class="dna-container">
@@ -437,32 +464,29 @@
     <div id="feedback2" class="feedback"></div>
   </div>
 
-  <!-- STEP 4 (Level 3): Graphical Calibration & Open Workshop -->
+  <!-- STEP 4 (Level 3): INTERACTIVE GRAPH PLOTTING -->
   <div id="level3" class="level-card locked" data-step="3">
-    <span class="badge">Step 4: Calibration Curve & Workshop</span>
-    <h2>4. Line Graph & Strategy Exploration</h2>
+    <span class="badge">Step 4: Interactive Graph Plotting</span>
+    <h2>4. Plot the Proportionality Line</h2>
     <p style="color: var(--text-muted); margin-top: 4px;">
-      A direct proportion graph forms a straight line passing through origin <strong>(0, 0)</strong>.
+      Click on the grid below to plot the 3 coordinate points from your data table: 
+      <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.
     </p>
 
-    <div class="chart-container">
-      <canvas id="proportionChart"></canvas>
-    </div>
-
-    <!-- Critical Thinking Workshop -->
-    <div class="workshop-panel">
-      <h3>💡 Open-Ended DNA Strategy Workshop</h3>
-      <p style="color: var(--text-muted); font-size:0.9rem; margin-top: 4px;">
-        Test alternate strategy pathways! Try different base pair values below to see how your constant rate scales the target segment in real-time.
-      </p>
-      <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
-        <input type="number" id="workshopBp" value="3300" step="300">
-        <span>Base Pairs ➔ Target Length = </span>
-        <strong id="workshopResult" class="highlight">1100 nm</strong>
+    <div class="graph-wrapper">
+      <canvas id="plotCanvas" width="800" height="320"></canvas>
+      <div class="target-checklist">
+        <div id="chk1" class="target-item">⚪ Point (600, 200)</div>
+        <div id="chk2" class="target-item">⚪ Point (1,500, 500)</div>
+        <div id="chk3" class="target-item">⚪ Point (2,400, 800)</div>
       </div>
     </div>
 
-    <button class="btn" onclick="unlockLevel(4)">Proceed to Evidence Analysis 🚀</button>
+    <div>
+      <button class="btn" onclick="checkGraph()">Verify Plotted Line 📈</button>
+      <button class="btn btn-secondary" onclick="resetGraph()">Reset Points 🔄</button>
+    </div>
+    <div id="feedback3" class="feedback"></div>
   </div>
 
   <!-- STEP 5 (Level 4): Forensic Evidence Prediction -->
@@ -470,8 +494,8 @@
     <span class="badge">Step 5: Applied Challenge</span>
     <h2>5. Forensic Gene Sequence Challenge</h2>
     <p style="color: var(--text-muted); margin-top: 4px;">
-      A crime scene evidence sample measures <strong>1,400 nanometers</strong> in length. 
-      Using your rate of <strong>1/3 nm per base pair</strong>, determine the exact base pair count (x).
+      An evidence sample measures <strong>1,400 nanometers</strong> in length. 
+      Using your rate of <strong>1/3 nm per base pair</strong>, calculate the total base pair count (x).
     </p>
 
     <div style="margin: 20px 0;">
@@ -491,12 +515,12 @@
 </div>
 
 <script>
-  // State and Calibration Variables
+  // Global State Variables
   let currentStep = 0;
   let attemptsL2 = 0;
   let attemptsL4 = 0;
 
-  // Render SVG DNA Helix
+  // Render SVG DNA Helix Helper
   function renderHelix(svgId, bp) {
     const svg = document.getElementById(svgId);
     if (!svg) return;
@@ -540,7 +564,7 @@
     svg.appendChild(path2);
   }
 
-  // Step 1: Tactile Manipulative Listeners
+  // Step 1 Manipulative Event Handling
   const s0 = document.getElementById('bpSlider0');
   s0.addEventListener('input', (e) => {
     const bp = e.target.value;
@@ -549,7 +573,6 @@
     renderHelix('dnaSvg0', bp);
   });
 
-  // Dragging support for visual manipulative feel
   const tactileContainer = document.getElementById('tactileDnaContainer');
   let isDragging = false;
 
@@ -565,7 +588,7 @@
     s0.dispatchEvent(new Event('input'));
   });
 
-  // Step 2: Slider Listeners
+  // Step 2 Slider Listeners
   const s1 = document.getElementById('bpSlider1');
   s1.addEventListener('input', (e) => {
     const bp = e.target.value;
@@ -574,11 +597,10 @@
     renderHelix('dnaSvg1', bp);
   });
 
-  // Initial renders
   renderHelix('dnaSvg0', 300);
   renderHelix('dnaSvg1', 300);
 
-  // Progressive Unlocking Logic
+  // Progressive Level Unlocking
   function unlockLevel(lvlNum) {
     currentStep = lvlNum;
     const card = document.getElementById('level' + lvlNum);
@@ -587,10 +609,9 @@
 
     document.getElementById('progressFill').style.width = ((lvlNum + 1) * 20) + '%';
 
-    if (lvlNum === 3) initChart();
+    if (lvlNum === 3) drawGraphCanvas();
   }
 
-  // Responsive Mistakes Design: Step 3 Validation
   function checkLevel2() {
     attemptsL2++;
     const b = parseFloat(document.getElementById('ansB').value);
@@ -599,64 +620,176 @@
 
     if (b === 500 && c_bp === 2400) {
       fb.className = "feedback correct";
-      fb.textContent = "✨ Great calculation! 1/3 · 1500 = 500 nm and 2,400 base pairs produces 800 nm. Moving to Step 4!";
+      fb.textContent = "✨ Great calculation! 1/3 · 1500 = 500 nm and 2,400 base pairs produces 800 nm. Moving to Graph Plotting!";
       setTimeout(() => unlockLevel(3), 1200);
     } else {
       fb.className = "feedback guided-hint";
       if (attemptsL2 === 1) {
-        fb.textContent = "💡 Tutor Hint: Remember that each base pair provides 1/3 nm. Multiply 1,500 by 1/3 for Sample B!";
+        fb.textContent = "💡 Tutor Hint: Remember each base pair adds 1/3 nm. Multiply 1,500 by 1/3 for Sample B!";
       } else {
-        fb.textContent = "🔎 Visual Guide: For Sample C, if 1/3 of base pairs equals 800 nm, scale up by 3 (800 × 3) to find the total base pairs!";
+        fb.textContent = "🔎 Visual Guide: For Sample C, if 1/3 of base pairs equals 800 nm, scale up by 3 (800 × 3) to find total base pairs!";
       }
     }
   }
 
-  // Open-ended Workshop Listener
-  document.getElementById('workshopBp').addEventListener('input', (e) => {
-    const val = parseFloat(e.target.value) || 0;
-    document.getElementById('workshopResult').textContent = Math.round(val / 3) + ' nm';
-  });
+  // --- INTERACTIVE CANVAS GRAPH ENGINE ---
+  const canvas = document.getElementById('plotCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  const targets = [
+    { x: 600, y: 200, hit: false, chkId: 'chk1' },
+    { x: 1500, y: 500, hit: false, chkId: 'chk2' },
+    { x: 2400, y: 800, hit: false, chkId: 'chk3' }
+  ];
+  let plottedPoints = [];
 
-  // Chart Rendering
-  function initChart() {
-    const ctx = document.getElementById('proportionChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [0, 600, 1500, 2400, 4200],
-        datasets: [{
-          label: 'Direct Proportion Line: y = 1/3 · x',
-          data: [0, 200, 500, 800, 1400],
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.1)',
-          borderWidth: 3,
-          pointBackgroundColor: '#ef4444',
-          pointRadius: 6,
-          fill: true,
-          tension: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color: '#1e293b', font: { weight: 'bold' } } }
-        },
-        scales: {
-          x: {
-            title: { display: true, text: 'Base Pairs (x)', color: '#475569' },
-            grid: { color: '#cbd5e1' }
-          },
-          y: {
-            title: { display: true, text: 'Physical Length in nm (y)', color: '#475569' },
-            grid: { color: '#cbd5e1' }
-          }
-        }
-      }
+  function toScreenX(valX) {
+    const margin = 50;
+    const width = canvas.width - margin - 20;
+    return margin + (valX / 3000) * width;
+  }
+
+  function toScreenY(valY) {
+    const margin = 40;
+    const height = canvas.height - margin - 20;
+    return (canvas.height - margin) - (valY / 1000) * height;
+  }
+
+  function toValX(px) {
+    const margin = 50;
+    const width = canvas.width - margin - 20;
+    return ((px - margin) / width) * 3000;
+  }
+
+  function toValY(py) {
+    const margin = 40;
+    const height = canvas.height - margin - 20;
+    return (((canvas.height - margin) - py) / height) * 1000;
+  }
+
+  function drawGraphCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Grid lines
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x <= 3000; x += 300) {
+      const sx = toScreenX(x);
+      ctx.beginPath(); ctx.moveTo(sx, 10); ctx.lineTo(sx, canvas.height - 40); ctx.stroke();
+    }
+    for (let y = 0; y <= 1000; y += 100) {
+      const sy = toScreenY(y);
+      ctx.beginPath(); ctx.moveTo(50, sy); ctx.lineTo(canvas.width - 20, sy); ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(50, 10); ctx.lineTo(50, canvas.height - 40); ctx.lineTo(canvas.width - 20, canvas.height - 40);
+    ctx.stroke();
+
+    // Axis Labels
+    ctx.fillStyle = '#475569';
+    ctx.font = '11px sans-serif';
+    for (let x = 0; x <= 3000; x += 600) {
+      ctx.fillText(x, toScreenX(x) - 10, canvas.height - 22);
+    }
+    for (let y = 0; y <= 1000; y += 200) {
+      ctx.fillText(y, 15, toScreenY(y) + 4);
+    }
+
+    // Axis Titles
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('Base Pairs (x)', canvas.width / 2 - 40, canvas.height - 5);
+
+    // Target guides (faint dots)
+    targets.forEach(t => {
+      ctx.fillStyle = 'rgba(2, 132, 199, 0.25)';
+      ctx.beginPath();
+      ctx.arc(toScreenX(t.x), toScreenY(t.y), 8, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Draw connecting line if at least 2 target points are hit
+    const hits = targets.filter(t => t.hit);
+    if (hits.length >= 2) {
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(0), toScreenY(0));
+      ctx.lineTo(toScreenX(3000), toScreenY(1000));
+      ctx.stroke();
+    }
+
+    // Draw plotted points
+    plottedPoints.forEach(p => {
+      ctx.fillStyle = p.isTarget ? '#16a34a' : '#ef4444';
+      ctx.beginPath();
+      ctx.arc(toScreenX(p.x), toScreenY(p.y), 6, 0, Math.PI * 2);
+      ctx.fill();
     });
   }
 
-  // Responsive Mistakes Design: Step 5 Final Challenge Validation
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const clickX = (e.clientX - rect.left) * scaleX;
+    const clickY = (e.clientY - rect.top) * scaleY;
+
+    const valX = toValX(clickX);
+    const valY = toValY(clickY);
+
+    // Check hit near targets
+    let hitTarget = false;
+    targets.forEach(t => {
+      if (Math.abs(valX - t.x) < 180 && Math.abs(valY - t.y) < 60) {
+        t.hit = true;
+        hitTarget = true;
+        plottedPoints.push({ x: t.x, y: t.y, isTarget: true });
+        const chk = document.getElementById(t.chkId);
+        chk.className = "target-item done";
+        chk.textContent = `🟢 Point (${t.x.toLocaleString()}, ${t.y})`;
+      }
+    });
+
+    if (!hitTarget && valX >= 0 && valY >= 0) {
+      plottedPoints.push({ x: Math.round(valX), y: Math.round(valY), isTarget: false });
+    }
+
+    drawGraphCanvas();
+  });
+
+  function resetGraph() {
+    plottedPoints = [];
+    targets.forEach(t => {
+      t.hit = false;
+      const chk = document.getElementById(t.chkId);
+      chk.className = "target-item";
+      chk.textContent = `⚪ Point (${t.x.toLocaleString()}, ${t.y})`;
+    });
+    document.getElementById('feedback3').style.display = 'none';
+    drawGraphCanvas();
+  }
+
+  function checkGraph() {
+    const fb = document.getElementById('feedback3');
+    const allHit = targets.every(t => t.hit);
+
+    if (allHit) {
+      fb.className = "feedback correct";
+      fb.textContent = "🎯 Outstanding graph plotting! Notice how the points form a straight line passing directly through (0, 0). Proceeding to Step 5!";
+      setTimeout(() => unlockLevel(4), 1400);
+    } else {
+      fb.className = "feedback guided-hint";
+      fb.textContent = "💡 Click directly near the faint blue target rings on the grid to plot (600, 200), (1500, 500), and (2400, 800).";
+    }
+  }
+
+  // Step 5 Validation
   function checkLevel4() {
     attemptsL4++;
     const ans = parseFloat(document.getElementById('ansFinal').value);
@@ -676,7 +809,7 @@
     } else {
       fb.className = "feedback guided-hint";
       if (attemptsL4 === 1) {
-        fb.textContent = "💡 Tutor Hint: Look at your rate: Length = Base Pairs ÷ 3. So Base Pairs = Length × 3!";
+        fb.textContent = "💡 Tutor Hint: Look at your rate equation: Length = Base Pairs ÷ 3. So Base Pairs = Length × 3!";
       } else {
         fb.textContent = "🔎 Guided Step: Multiply 1,400 nm by 3 to scale up to the total base pair count.";
       }
