@@ -41,11 +41,20 @@
       </div>
     </header>
 
-    <!-- PAGE 1: OBSERVE & FIND RULE -->
+    <!-- PAGE 1: OBSERVE & DEFINE VARIABLES -->
     <div id="page-1" class="page-view active bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
       <div class="border-b border-slate-100 pb-4">
-        <h2 class="text-xl font-bold text-slate-900">Step 1: Discover the Rung Length</h2>
-        <p class="text-slate-600 text-sm mt-1">Observe the DNA sample below to determine the constant of proportionality.</p>
+        <h2 class="text-xl font-bold text-slate-900">Step 1: Understand Variables & Rung Length</h2>
+        <p class="text-slate-600 text-sm mt-1">Examine the DNA sample below to identify the relationship between input and output variables.</p>
+      </div>
+
+      <!-- Explicit Variable Definition Banner -->
+      <div class="bg-teal-50 border-l-4 border-teal-600 p-4 rounded-r-xl space-y-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-teal-800">Variable Definitions:</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-700">
+          <div><span class="font-bold text-amber-800 font-mono">x</span> = <strong>Number of Rungs</strong> (Independent Variable / Input)</div>
+          <div><span class="font-bold text-teal-800 font-mono">y</span> = <strong>Total DNA Length in nanometers (nm)</strong> (Dependent Variable / Output)</div>
+        </div>
       </div>
 
       <div class="bg-amber-50/50 p-6 rounded-xl border border-amber-100 flex flex-col md:flex-row items-center justify-around gap-6">
@@ -65,8 +74,8 @@
 
         <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 text-sm text-slate-700">
           <p class="font-bold text-slate-900">Lab Data:</p>
-          <p>• Rung Count (<span class="font-bold">x</span>) = <span class="font-bold text-amber-700">5 rungs</span></p>
-          <p>• Total Length (<span class="font-bold">y</span>) = <span class="font-bold text-teal-700">17 nm</span></p>
+          <p>• Number of Rungs (<span class="font-bold font-mono">x</span>) = <span class="font-bold text-amber-700">5 rungs</span></p>
+          <p>• Total Length (<span class="font-bold font-mono">y</span>) = <span class="font-bold text-teal-700">17 nm</span></p>
         </div>
       </div>
 
@@ -84,7 +93,7 @@
       </div>
 
       <div class="space-y-4">
-        <p class="font-medium text-slate-800 text-sm">2. Write the algebraic rule for total length (<span class="font-bold">y</span>) given rungs (<span class="font-bold">x</span>):</p>
+        <p class="font-medium text-slate-800 text-sm">2. Write the algebraic rule relating total length (<span class="font-bold">y</span>) to number of rungs (<span class="font-bold">x</span>):</p>
         <div class="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-200 text-base font-bold text-slate-800">
           <span>y = (</span>
           <div class="fraction-box">
@@ -107,15 +116,15 @@
     <div id="page-2" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
       <div class="border-b border-slate-100 pb-4">
         <h2 class="text-xl font-bold text-slate-900">Step 2: Complete the Measurement Chart</h2>
-        <p class="text-slate-600 text-sm mt-1">Use your rule <span class="font-bold text-slate-800">y = (17/5) · x</span> to calculate the values for your graph.</p>
+        <p class="text-slate-600 text-sm mt-1">Use your rule <span class="font-bold text-slate-800">y = (17/5) · x</span> to compute total length (<span class="font-bold">y</span>) for each rung count (<span class="font-bold">x</span>).</p>
       </div>
 
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden">
           <thead>
             <tr class="bg-amber-50/60 text-slate-700 text-sm">
-              <th class="p-3.5 border-b border-slate-200">Rungs (x)</th>
-              <th class="p-3.5 border-b border-slate-200">Length in nm (y)</th>
+              <th class="p-3.5 border-b border-slate-200">Number of Rungs (x)</th>
+              <th class="p-3.5 border-b border-slate-200">Total Length in nm (y)</th>
               <th class="p-3.5 border-b border-slate-200">Coordinate Pair (x, y)</th>
             </tr>
           </thead>
@@ -158,11 +167,11 @@
       </div>
     </div>
 
-    <!-- PAGE 3: PLOT POINTS (TEACHER-FRIENDLY GRAPH) -->
+    <!-- PAGE 3: PLOT POINTS ON A CLEAN GRID -->
     <div id="page-3" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
       <div class="border-b border-slate-100 pb-4">
-        <h2 class="text-xl font-bold text-slate-900">Step 3: Plot Your Points</h2>
-        <p class="text-slate-600 text-sm mt-1">Use the axes below to plot your 4 coordinate pairs: <strong>(5, 17)</strong>, <strong>(10, 34)</strong>, <strong>(15, 51)</strong>, and <strong>(20, 68)</strong>. Click the grid where each point belongs!</p>
+        <h2 class="text-xl font-bold text-slate-900">Step 3: Plot Your Coordinate Points</h2>
+        <p class="text-slate-600 text-sm mt-1">Locate each $(x, y)$ coordinate pair on the grid axes below and click to place your points: <strong>(5, 17)</strong>, <strong>(10, 34)</strong>, <strong>(15, 51)</strong>, and <strong>(20, 68)</strong>.</p>
       </div>
 
       <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -184,8 +193,8 @@
     <!-- PAGE 4: CONNECT LINE -->
     <div id="page-4" class="page-view bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
       <div class="border-b border-slate-100 pb-4">
-        <h2 class="text-xl font-bold text-slate-900">Step 4: Analyze the Line of Proportionality</h2>
-        <p class="text-slate-600 text-sm mt-1">Direct proportions form a continuous straight line that passes through the origin $(0,0)$.</p>
+        <h2 class="text-xl font-bold text-slate-900">Step 4: Analyze the Proportionality Line</h2>
+        <p class="text-slate-600 text-sm mt-1">A direct proportion forms a continuous straight line that passes directly through the origin $(0,0)$.</p>
       </div>
 
       <div class="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -215,12 +224,12 @@
 
       <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 space-y-2 text-sm text-slate-800">
         <p class="font-bold text-amber-900">🔍 Forensic Case File:</p>
-        <p>A recovered DNA strand has a measured length of <strong>85 nanometers</strong>.</p>
+        <p>A recovered DNA strand has a measured length of <span class="font-bold">y = 85 nanometers</span>.</p>
         <p>Use your equation <span class="font-bold">y = (17/5) · x</span> to solve for the total number of rungs (<span class="font-bold">x</span>).</p>
       </div>
 
       <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
-        <label class="text-sm font-bold text-slate-700">Calculated Rungs =</label>
+        <label class="text-sm font-bold text-slate-700">Calculated Rungs (x) =</label>
         <input type="text" id="p5-input" inputmode="numeric" placeholder="Rungs" class="px-4 py-2 border border-slate-300 rounded-lg w-32 text-center font-bold text-lg focus:ring-2 focus:ring-teal-500 outline-none">
         <span class="text-sm text-slate-500">rungs</span>
       </div>
@@ -235,7 +244,7 @@
       <div id="certificate" class="hidden mt-8 p-6 bg-gradient-to-br from-teal-50 to-amber-50 rounded-2xl border-2 border-teal-600 text-center space-y-3">
         <span class="text-4xl">🧬</span>
         <h3 class="text-xl font-bold text-slate-900">Direct Proportion Mastery Certificate</h3>
-        <p class="text-slate-600 text-sm">Congratulations! You successfully calculated the constant of proportionality, completed the data table, accurately graphed the coordinates, and solved the forensic case!</p>
+        <p class="text-slate-600 text-sm">Congratulations! You defined the variables, calculated the unit rate, completed the coordinate table, graphed the direct proportion, and solved the forensic crime case!</p>
         <div class="pt-3 border-t border-slate-200 text-xs text-slate-500 font-medium">Grade 8 Mathematics • Core Equation: y = (17/5) · x</div>
       </div>
     </div>
@@ -260,7 +269,7 @@
         let val = e.target.value;
         if (val.includes('.') || val.includes('*')) {
           e.target.value = val.replace(/[\.\*]/g, '');
-          alert("Decimals and star (*) symbols are not allowed! Enter whole numbers or fractions.");
+          alert("Decimals and star (*) symbols are not allowed! Enter whole numbers or improper fractions.");
         }
       });
     });
@@ -328,10 +337,10 @@
       const rDen = document.getElementById('p1-rule-den').value.trim();
 
       if (num === '17' && den === '5' && rNum === '17' && rDen === '5') {
-        showMsg('p1-feedback', 'success', 'Correct! You found that 1 rung = 17/5 nm, making the rule y = (17/5) · x.');
+        showMsg('p1-feedback', 'success', 'Correct! You found that 1 rung = 17/5 nm, making the equation y = (17/5) · x.');
         setTimeout(() => goToPage(2), 1200);
       } else {
-        showMsg('p1-feedback', 'error', 'Hint: Divide total length (17) by total rungs (5) to find length per single rung.');
+        showMsg('p1-feedback', 'error', 'Hint: Divide total length y (17) by total rungs x (5) to find length per single rung.');
       }
     }
 
@@ -344,7 +353,7 @@
         showMsg('p2-feedback', 'success', 'All measurements are correct! Let us plot them on a coordinate grid.');
         setTimeout(() => goToPage(3), 1200);
       } else {
-        showMsg('p2-feedback', 'error', 'Hint: Multiply each rung count by 17/5. For example: 10 × (17/5) = 34.');
+        showMsg('p2-feedback', 'error', 'Hint: Multiply each rung count (x) by 17/5. For example: 10 × (17/5) = 34.');
       }
     }
 
@@ -377,7 +386,7 @@
       ctx.strokeStyle = '#f1f5f9';
       ctx.lineWidth = 1;
 
-      // Vertical lines
+      // Vertical Grid Lines
       for (let i = 0; i <= 25; i += 5) {
         const x = pad + (i / 25) * w;
         ctx.beginPath();
@@ -390,7 +399,7 @@
         ctx.fillText(i, x - 4, canvas.height - pad + 15);
       }
 
-      // Horizontal lines
+      // Horizontal Grid Lines
       for (let j = 0; j <= 80; j += 10) {
         const y = canvas.height - pad - (j / 80) * h;
         ctx.beginPath();
@@ -432,7 +441,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawGrid(ctx, canvas);
 
-        // Draw user points with coordinate badges
+        // Draw student-plotted points
         plottedPoints.forEach(pt => {
           const coords = getCanvasCoords(canvas, pt.x, pt.y);
           
@@ -456,7 +465,7 @@
 
         const val = getValuesFromCoords(canvas, clickX, clickY);
 
-        // Teacher logic: Check proximity to any target point (tolerance of 3 units on x, 6 on y)
+        // Teacher logic: Check proximity to target point
         TARGET_POINTS.forEach(target => {
           if (Math.abs(val.x - target.x) <= 2.5 && Math.abs(val.y - target.y) <= 6) {
             if (!plottedPoints.some(p => p.x === target.x && p.y === target.y)) {
@@ -476,7 +485,7 @@
         showMsg('p3-feedback', 'success', 'Great job! All 4 points are accurately plotted on the graph.');
         setTimeout(() => goToPage(4), 1200);
       } else {
-        showMsg('p3-feedback', 'error', `You have plotted ${plottedPoints.length} out of 4 points correctly. Use the table values to click where each (x, y) coordinate belongs.`);
+        showMsg('p3-feedback', 'error', `You have plotted ${plottedPoints.length} out of 4 points correctly. Read the axes carefully to click where each (x, y) coordinate belongs.`);
       }
     }
 
