@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DNA Quest: Interactive Graphing & Direct Proportion Lab</title>
+  <title>DNA Quest: Interactive Point & Line Graphing Lab</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
     :root {
@@ -259,6 +259,11 @@
       margin-left: 8px;
     }
 
+    .btn-action {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      margin-left: 8px;
+    }
+
     .feedback {
       margin-top: 15px;
       padding: 14px;
@@ -300,7 +305,7 @@
       cursor: crosshair;
       display: block;
       width: 100%;
-      height: 320px;
+      height: 340px;
     }
 
     .target-checklist {
@@ -323,6 +328,16 @@
 
     .target-item.done {
       color: #16a34a;
+    }
+
+    .instructions-box {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: #065f46;
     }
 
     .certificate {
@@ -358,7 +373,7 @@
 <div class="container">
   <header>
     <h1>🧬 DNA Quest: Interactive Graphing & Direct Proportion Lab</h1>
-    <p>Explore physical DNA models, plot data points, and connect rate laws!</p>
+    <p>Explore physical DNA models, plot coordinate points, and draw your proportion graph line!</p>
     <div class="progress-bar-container">
       <div id="progressFill" class="progress-fill"></div>
     </div>
@@ -464,27 +479,29 @@
     <div id="feedback2" class="feedback"></div>
   </div>
 
-  <!-- STEP 4 (Level 3): INTERACTIVE GRAPH PLOTTING -->
+  <!-- STEP 4 (Level 3): INTERACTIVE POINT PLOTTING AND LINE DRAWING -->
   <div id="level3" class="level-card locked" data-step="3">
-    <span class="badge">Step 4: Interactive Graph Plotting</span>
-    <h2>4. Plot the Proportionality Line</h2>
-    <p style="color: var(--text-muted); margin-top: 4px;">
-      Click on the grid below to plot the 3 coordinate points from your data table: 
-      <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.
-    </p>
+    <span class="badge">Step 4: Plot Points & Draw Line</span>
+    <h2>4. Plot Points and Connect the Graph Line</h2>
+    
+    <div class="instructions-box" id="step4Instructions">
+      <strong>Step A:</strong> Click on the canvas grid below to plot points <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.
+    </div>
 
     <div class="graph-wrapper">
-      <canvas id="plotCanvas" width="800" height="320"></canvas>
+      <canvas id="plotCanvas" width="800" height="340"></canvas>
       <div class="target-checklist">
-        <div id="chk1" class="target-item">⚪ Point (600, 200)</div>
-        <div id="chk2" class="target-item">⚪ Point (1,500, 500)</div>
-        <div id="chk3" class="target-item">⚪ Point (2,400, 800)</div>
+        <div id="chk1" class="target-item">⚪ Plot Point (600, 200)</div>
+        <div id="chk2" class="target-item">⚪ Plot Point (1,500, 500)</div>
+        <div id="chk3" class="target-item">⚪ Plot Point (2,400, 800)</div>
+        <div id="chkLine" class="target-item">⚪ Connect Line from (0,0)</div>
       </div>
     </div>
 
     <div>
-      <button class="btn" onclick="checkGraph()">Verify Plotted Line 📈</button>
-      <button class="btn btn-secondary" onclick="resetGraph()">Reset Points 🔄</button>
+      <button class="btn btn-action" id="btnDrawMode" onclick="enableLineDrawing()" disabled>Connect Points with Line ✏️</button>
+      <button class="btn" id="btnVerifyGraph" onclick="checkGraph()">Verify Completed Graph 📈</button>
+      <button class="btn btn-secondary" onclick="resetGraph()">Reset Grid 🔄</button>
     </div>
     <div id="feedback3" class="feedback"></div>
   </div>
@@ -508,7 +525,7 @@
 
     <div id="certificate" class="certificate">
       <h2>🏆 Proportionality Specialist!</h2>
-      <p style="color: #78350f;">You successfully mastered direct proportion models across visual, numeric, and graphical representations!</p>
+      <p style="color: #78350f;">You successfully mastered direct proportion models across visual, numeric, point plotting, and line graphing representations!</p>
       <p style="margin-top:12px; color:#047857; font-weight:bold;">Established Rate (k) = 1/3 nm/bp | Target Sequence = 4,200 base pairs</p>
     </div>
   </div>
@@ -632,7 +649,7 @@
     }
   }
 
-  // --- INTERACTIVE CANVAS GRAPH ENGINE ---
+  // --- INTERACTIVE GRAPH CANVAS ENGINE ---
   const canvas = document.getElementById('plotCanvas');
   const ctx = canvas.getContext('2d');
   
@@ -641,7 +658,13 @@
     { x: 1500, y: 500, hit: false, chkId: 'chk2' },
     { x: 2400, y: 800, hit: false, chkId: 'chk3' }
   ];
+
   let plottedPoints = [];
+  let isLineMode = false;
+  let isDrawingLine = false;
+  let lineStart = null;
+  let lineEnd = null;
+  let drawnLineValid = false;
 
   function toScreenX(valX) {
     const margin = 50;
@@ -712,14 +735,13 @@
       ctx.fill();
     });
 
-    // Draw connecting line if at least 2 target points are hit
-    const hits = targets.filter(t => t.hit);
-    if (hits.length >= 2) {
-      ctx.strokeStyle = '#0284c7';
+    // Draw user-drawn connecting line
+    if (lineStart && lineEnd) {
+      ctx.strokeStyle = '#8b5cf6';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(toScreenX(0), toScreenY(0));
-      ctx.lineTo(toScreenX(3000), toScreenY(1000));
+      ctx.moveTo(lineStart.x, lineStart.y);
+      ctx.lineTo(lineEnd.x, lineEnd.y);
       ctx.stroke();
     }
 
@@ -732,7 +754,8 @@
     });
   }
 
-  canvas.addEventListener('click', (e) => {
+  // Point Plotting and Line Dragging Handlers
+  canvas.addEventListener('mousedown', (e) => {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -740,37 +763,108 @@
     const clickX = (e.clientX - rect.left) * scaleX;
     const clickY = (e.clientY - rect.top) * scaleY;
 
-    const valX = toValX(clickX);
-    const valY = toValY(clickY);
+    if (isLineMode) {
+      isDrawingLine = true;
+      lineStart = { x: clickX, y: clickY };
+      lineEnd = { x: clickX, y: clickY };
+      drawGraphCanvas();
+    } else {
+      const valX = toValX(clickX);
+      const valY = toValY(clickY);
 
-    // Check hit near targets
-    let hitTarget = false;
-    targets.forEach(t => {
-      if (Math.abs(valX - t.x) < 180 && Math.abs(valY - t.y) < 60) {
-        t.hit = true;
-        hitTarget = true;
-        plottedPoints.push({ x: t.x, y: t.y, isTarget: true });
-        const chk = document.getElementById(t.chkId);
-        chk.className = "target-item done";
-        chk.textContent = `🟢 Point (${t.x.toLocaleString()}, ${t.y})`;
+      let hitTarget = false;
+      targets.forEach(t => {
+        if (Math.abs(valX - t.x) < 180 && Math.abs(valY - t.y) < 60) {
+          t.hit = true;
+          hitTarget = true;
+          plottedPoints.push({ x: t.x, y: t.y, isTarget: true });
+          const chk = document.getElementById(t.chkId);
+          chk.className = "target-item done";
+          chk.textContent = `🟢 Point (${t.x.toLocaleString()}, ${t.y})`;
+        }
+      });
+
+      if (!hitTarget && valX >= 0 && valY >= 0) {
+        plottedPoints.push({ x: Math.round(valX), y: Math.round(valY), isTarget: false });
       }
-    });
 
-    if (!hitTarget && valX >= 0 && valY >= 0) {
-      plottedPoints.push({ x: Math.round(valX), y: Math.round(valY), isTarget: false });
+      // Enable line mode button if all 3 points are plotted
+      if (targets.every(t => t.hit)) {
+        document.getElementById('btnDrawMode').disabled = false;
+        document.getElementById('step4Instructions').innerHTML = 
+          "<strong>Step B:</strong> Points plotted! Click <strong>'Connect Points with Line'</strong>, then click and drag a straight line from <strong>(0,0)</strong> through your plotted points.";
+      }
+
+      drawGraphCanvas();
     }
+  });
 
+  canvas.addEventListener('mousemove', (e) => {
+    if (!isDrawingLine || !isLineMode) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    lineEnd = {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
     drawGraphCanvas();
   });
 
+  canvas.addEventListener('mouseup', () => {
+    if (isDrawingLine && isLineMode) {
+      isDrawingLine = false;
+
+      // Validate line starts near origin (0,0) and ends near (2400, 800) or beyond
+      const startValX = toValX(lineStart.x);
+      const startValY = toValY(lineStart.y);
+      const endValX = toValX(lineEnd.x);
+      const endValY = toValY(lineEnd.y);
+
+      const nearOrigin = startValX < 250 && startValY < 120;
+      const spansPoints = endValX > 2000 && Math.abs(endValY - (endValX / 3)) < 150;
+
+      if (nearOrigin && spansPoints) {
+        drawnLineValid = true;
+        const chkLine = document.getElementById('chkLine');
+        chkLine.className = "target-item done";
+        chkLine.textContent = "🟢 Connected Line Through Origin";
+      }
+    }
+  });
+
+  function enableLineDrawing() {
+    isLineMode = true;
+    canvas.style.cursor = 'draw';
+    const fb = document.getElementById('feedback3');
+    fb.className = "feedback guided-hint";
+    fb.textContent = "✏️ Line Drawing Mode Active: Click and drag from (0,0) at the bottom-left through your 3 green points to draw your proportion line!";
+  }
+
   function resetGraph() {
     plottedPoints = [];
+    lineStart = null;
+    lineEnd = null;
+    isLineMode = false;
+    drawnLineValid = false;
+    canvas.style.cursor = 'crosshair';
+
     targets.forEach(t => {
       t.hit = false;
       const chk = document.getElementById(t.chkId);
       chk.className = "target-item";
-      chk.textContent = `⚪ Point (${t.x.toLocaleString()}, ${t.y})`;
+      chk.textContent = `⚪ Plot Point (${t.x.toLocaleString()}, ${t.y})`;
     });
+
+    const chkLine = document.getElementById('chkLine');
+    chkLine.className = "target-item";
+    chkLine.textContent = "⚪ Connect Line from (0,0)";
+
+    document.getElementById('btnDrawMode').disabled = true;
+    document.getElementById('step4Instructions').innerHTML = 
+      "<strong>Step A:</strong> Click on the canvas grid below to plot points <strong>(600, 200)</strong>, <strong>(1500, 500)</strong>, and <strong>(2400, 800)</strong>.";
+
     document.getElementById('feedback3').style.display = 'none';
     drawGraphCanvas();
   }
@@ -779,14 +873,21 @@
     const fb = document.getElementById('feedback3');
     const allHit = targets.every(t => t.hit);
 
-    if (allHit) {
-      fb.className = "feedback correct";
-      fb.textContent = "🎯 Outstanding graph plotting! Notice how the points form a straight line passing directly through (0, 0). Proceeding to Step 5!";
-      setTimeout(() => unlockLevel(4), 1400);
-    } else {
+    if (!allHit) {
       fb.className = "feedback guided-hint";
-      fb.textContent = "💡 Click directly near the faint blue target rings on the grid to plot (600, 200), (1500, 500), and (2400, 800).";
+      fb.textContent = "💡 Please plot all 3 points on the grid first: (600, 200), (1,500, 500), and (2,400, 800).";
+      return;
     }
+
+    if (!drawnLineValid) {
+      fb.className = "feedback guided-hint";
+      fb.textContent = "✏️ Almost there! Click 'Connect Points with Line' and drag a straight line from (0,0) through all your points.";
+      return;
+    }
+
+    fb.className = "feedback correct";
+    fb.textContent = "🎯 Outstanding graphing! You plotted all coordinate points and connected them with a line passing straight through (0,0). Unlocking Step 5!";
+    setTimeout(() => unlockLevel(4), 1400);
   }
 
   // Step 5 Validation
