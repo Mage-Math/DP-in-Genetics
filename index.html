@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exploring DNA & Direct Proportion</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #2b5c8f;
+      --secondary: #d9534f;
+      --bg: #f4f7f9;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --accent: #28a745;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+      background: var(--primary);
+      color: white;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+
+    .step-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* SVG Interactive DNA Animation */
+    .dna-container {
+      width: 100%;
+      height: 180px;
+      background: #111827;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slider-controls {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    input[type=range] {
+      flex: 1;
+      height: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #e9ecef;
+    }
+
+    input[type=number] {
+      width: 80px;
+      padding: 5px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #1d3e61;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .correct { color: var(--accent); }
+    .incorrect { color: var(--secondary); }
+
+    .chart-container {
+      position: relative;
+      height: 350px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>DNA Physical Length & Direct Proportion</h1>
+    <p>Exploring Genetics through Mathematics (Exploring Science 9Ac)</p>
+  </header>
+
+  <!-- STEP 1: THE KNOWN -->
+  <div class="section-card">
+    <span class="step-tag">Step 1: The Known (Visualizing Base Pairs)</span>
+    <h2>Interactive DNA Strand Explorer</h2>
+    <p>Every base pair (bp) adds a constant physical distance of <strong>0.34 nm</strong> to a DNA strand. Drag the slider to add base pairs and watch the physical length grow proportionally.</p>
+    
+    <div class="dna-container">
+      <svg id="dnaSvg" width="100%" height="100" viewBox="0 0 600 100">
+        <!-- DNA Base Pairs will be animated here via JS -->
+      </svg>
+    </div>
+
+    <div class="slider-controls">
+      <label for="bpSlider"><strong>Base Pairs ($x$):</strong> <span id="bpValue">1000</span> bp</label>
+      <input type="range" id="bpSlider" min="500" max="5000" step="100" value="1000">
+      <div><strong>Physical Length ($y$):</strong> <span id="lengthValue" style="color:var(--secondary); font-size:1.2rem; font-weight:bold;">340</span> nm</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: CONNECTING MATH & SCIENCE -->
+  <div class="section-card">
+    <span class="step-tag">Step 2: Proportionality & Data</span>
+    <h2>Complete the Data Table</h2>
+    <p>Calculate the missing physical length $y$ using $y = k \times x$, where $k = 0.34\text{ nm/bp}$.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Sample</th>
+          <th>Base Pairs ($x$)</th>
+          <th>Formula ($y = 0.34x$)</th>
+          <th>Physical Length in nm ($y$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sample A</td>
+          <td>1,500</td>
+          <td>$0.34 \times 1,500$</td>
+          <td>510</td>
+        </tr>
+        <tr>
+          <td>Sample B</td>
+          <td>3,000</td>
+          <td>$0.34 \times 3,000$</td>
+          <td><input type="number" id="inputB" placeholder="?"></td>
+        </tr>
+        <tr>
+          <td>Sample C</td>
+          <td>5,000</td>
+          <td>$0.34 \times 5,000$</td>
+          <td><input type="number" id="inputC" placeholder="?"></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn" onclick="checkTable()">Verify Answers</button>
+    <div id="tableFeedback" class="feedback"></div>
+  </div>
+
+  <!-- STEP 3: ANIMATED GRAPH -->
+  <div class="section-card">
+    <span class="step-tag">Step 3: Graphing Direct Proportion</span>
+    <h2>Linear Relationship ($y = kx$)</h2>
+    <p>Notice how directly proportional relationships create a straight line passing directly through the origin $(0,0)$.</p>
+    <div class="chart-container">
+      <canvas id="proportionChart"></canvas>
+    </div>
+  </div>
+
+  <!-- STEP 4: THE UNKNOWN -->
+  <div class="section-card">
+    <span class="step-tag">Step 4: The Unknown (Extrapolation)</span>
+    <h2>Predicting Human Chromosome Segments</h2>
+    <p>A scientist identifies a target gene region containing <strong>8,000 base pairs</strong>. Predict its physical length using your constant of proportionality.</p>
+    
+    <div style="margin: 15px 0;">
+      <label for="inputUnknown"><strong>Calculated Length ($y$ in nm):</strong> </label>
+      <input type="number" id="inputUnknown" placeholder="e.g. 2500">
+      <button class="btn" onclick="checkUnknown()">Submit Prediction</button>
+    </div>
+    <div id="unknownFeedback" class="feedback"></div>
+  </div>
+</div>
+
+<script>
+  // 1. Interactive DNA Visualizer
+  const slider = document.getElementById('bpSlider');
+  const bpValue = document.getElementById('bpValue');
+  const lengthValue = document.getElementById('lengthValue');
+  const svg = document.getElementById('dnaSvg');
+
+  function drawDna(bpCount) {
+    bpValue.textContent = bpCount;
+    const lengthNm = (bpCount * 0.34).toFixed(1);
+    lengthValue.textContent = lengthNm;
+
+    svg.innerHTML = '';
+    const numRungs = Math.min(Math.floor(bpCount / 100), 40);
+    const spacing = 580 / numRungs;
+
+    // Draw backbone strands
+    let strand1 = "M 10 30 ";
+    let strand2 = "M 10 70 ";
+
+    for (let i = 0; i <= numRungs; i++) {
+      const x = 10 + i * spacing;
+      const y1 = 50 + 20 * Math.sin(i * 0.5);
+      const y2 = 50 - 20 * Math.sin(i * 0.5);
+
+      // Draw Rungs
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", x);
+      line.setAttribute("y1", y1);
+      line.setAttribute("x2", x);
+      line.setAttribute("y2", y2);
+      line.setAttribute("stroke", i % 2 === 0 ? "#d9534f" : "#28a745");
+      line.setAttribute("stroke-width", "3");
+      svg.appendChild(line);
+
+      strand1 += `L ${x}${y1} `;
+      strand2 += `L ${x}${y2} `;
+    }
+
+    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path1.setAttribute("d", strand1);
+    path1.setAttribute("stroke", "#2b5c8f");
+    path1.setAttribute("fill", "none");
+    path1.setAttribute("stroke-width", "4");
+    svg.appendChild(path1);
+
+    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path2.setAttribute("d", strand2);
+    path2.setAttribute("stroke", "#2b5c8f");
+    path2.setAttribute("fill", "none");
+    path2.setAttribute("stroke-width", "4");
+    svg.appendChild(path2);
+  }
+
+  slider.addEventListener('input', (e) => drawDna(e.target.value));
+  drawDna(1000);
+
+  // 2. Table Validation
+  function checkTable() {
+    const valB = parseFloat(document.getElementById('inputB').value);
+    const valC = parseFloat(document.getElementById('inputC').value);
+    const feedback = document.getElementById('tableFeedback');
+
+    if (valB === 1020 && valC === 1700) {
+      feedback.textContent = "Correct! You successfully calculated the physical lengths.";
+      feedback.className = "feedback correct";
+    } else {
+      feedback.textContent = "Incorrect. Remember: Multiply base pairs by 0.34.";
+      feedback.className = "feedback incorrect";
+    }
+  }
+
+  // 3. Chart.js Setup
+  const ctx = document.getElementById('proportionChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [0, 1500, 3000, 5000, 8000],
+      datasets: [{
+        label: 'DNA Length (y = 0.34x)',
+        data: [0, 510, 1020, 1700, 2720],
+        borderColor: '#2b5c8f',
+        backgroundColor: 'rgba(43, 92, 143, 0.1)',
+        borderWidth: 3,
+        pointBackgroundColor: '#d9534f',
+        pointRadius: 6,
+        fill: true,
+        tension: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { display: true, text: 'Number of Base Pairs (x)' },
+          min: 0
+        },
+        y: {
+          title: { display: true, text: 'Physical Length in nm (y)' },
+          min: 0
+        }
+      }
+    }
+  });
+
+  // 4. Extrapolation Check
+  function checkUnknown() {
+    const val = parseFloat(document.getElementById('inputUnknown').value);
+    const feedback = document.getElementById('unknownFeedback');
+
+    if (val === 2720) {
+      feedback.textContent = "Excellent! 8,000 bp × 0.34 nm/bp = 2,720 nm. Your prediction matches the graph!";
+      feedback.className = "feedback correct";
+    } else {
+      feedback.textContent = "Not quite. Calculate 8000 × 0.34 or inspect the top-right point on the graph.";
+      feedback.className = "feedback incorrect";
+    }
+  }
+</script>
+</body>
+</html>
